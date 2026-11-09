@@ -119,6 +119,18 @@
   .label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 6px; }
   .words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   .words span { background: var(--chip); padding: 3px 10px; border-radius: 6px; font-size: .85rem; }
+  .note { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 8px;
+          padding: 10px 12px; margin: 0 0 12px; font-size: .88rem; }
+  .note p { margin: 0 0 6px; }
+  .note ul { margin: 0; padding: 0; list-style: none; }
+  .note li { padding: 1px 0; }
+  .note .ok { color: var(--good); }
+  .note .bad { color: #d64545; text-decoration: line-through; text-decoration-thickness: 1px; }
+  @media (prefers-color-scheme: dark) { .note .bad { color: #ff8080; } }
+  .extra-block { scroll-margin-top: 80px; margin-top: 48px; padding-top: 32px; border-top: 2px dashed var(--border); }
+  .extra-block h1 { font-size: 1.4rem; }
+  .jump { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); font: inherit;
+          font-size: .88rem; font-weight: 600; padding: 6px 14px; border-radius: 99px; cursor: pointer; margin: -8px 0 20px; }
   details { font-size: .88rem; }
   summary { cursor: pointer; color: var(--accent); font-weight: 600; }
   .plan { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
@@ -212,7 +224,10 @@
   </section>
 
   <!-- ENGLISH -->
-  <section data-page="english" data-module="english"></section>
+  <section data-page="english">
+    <div data-module="english"></div>
+    <div data-module="grammar" class="extra-block" id="grammar-extras"></div>
+  </section>
 
   <!-- PUBLIC SPEAKING -->
   <section data-page="speaking" data-module="speaking"></section>
@@ -497,6 +512,153 @@ const SPEAKING_DAYS = [
     w: ["when I started", "the biggest change", "I learned that", "my next goal", "thank you for", "the journey continues"] }
 ];
 
+const GRAMMAR_DAYS = [
+  // ---------- Sentence Structure ----------
+  { t: "Basic Word Order", lv: "Sentence Structure",
+    g: "Put words in the right order every time.",
+    note: { rule: "Subject → Verb → Object → Place → Time.",
+            ok: ["I met my friend at the station yesterday."],
+            bad: ["Yesterday I at the station my friend met."] },
+    m: "Give me 8 jumbled sentences, one at a time, for me to put in the correct order and say aloud. Then ask me to make 3 sentences of my own about my day using Subject–Verb–Object–Place–Time.",
+    w: ["Subject + Verb", "+ Object", "+ Place", "+ Time", "I play football in the park on Sundays."] },
+  { t: "Joining Ideas: and, but, so, because", lv: "Sentence Structure",
+    g: "Stop speaking in short, broken sentences — connect your ideas.",
+    note: { rule: "and = add, but = contrast, so = result, because = reason.",
+            ok: ["I was tired, so I went to bed early.", "I stayed home because it was raining."],
+            bad: ["Because it was raining. I stayed home."] },
+    m: "Give me pairs of short sentences and ask me to join them with and / but / so / because. Then ask me 4 personal questions that I must answer using at least one connector each.",
+    w: ["and", "but", "so", "because", "or"] },
+  { t: "Complex Sentences: when, if, although, while", lv: "Sentence Structure",
+    g: "Use linking words to show time, condition and contrast.",
+    note: { rule: "Put a comma when the linking clause comes first.",
+            ok: ["When I reached home, it started raining.", "Although it was late, we kept working.", "If you call me, I'll come."],
+            bad: ["Although it was late, but we kept working."] },
+    m: "Give me sentence starters (When…, If…, Although…, While…) one at a time for me to complete in my own words. Then give me 4 simple sentences to combine into complex ones.",
+    w: ["When …,", "If …,", "Although …,", "While …,", "unless", "as soon as"] },
+  { t: "Describing with who, which, that, where", lv: "Sentence Structure",
+    g: "Add information smoothly with relative clauses.",
+    note: { rule: "who = people, which/that = things, where = places.",
+            ok: ["This is the man who helped me.", "Kochi is the city where I grew up.", "The phone that I bought is great."],
+            bad: ["This is the man which helped me."] },
+    m: "Give me pairs of sentences to join with who / which / that / where. Then ask me to describe 3 people and 3 places in my life using one relative clause each.",
+    w: ["the person who", "the thing which / that", "the place where", "the day when", "whose"] },
+  { t: "Making Sentences Longer & Richer", lv: "Sentence Structure",
+    g: "Turn short answers into full, detailed sentences.",
+    note: { rule: "Add details: what kind? where? when? how? why?",
+            ok: ["I ate. → I quickly ate a hot masala dosa at a small café near my office this morning."],
+            bad: ["Food. Good. I like."] },
+    m: "Give me 6 very short sentences, one at a time. For each, ask me to expand it by adding adjectives, adverbs, place, time and reason. Then ask me 3 questions that I must answer in full sentences of at least 12 words.",
+    w: ["adjective + noun", "adverb (quickly, carefully)", "place", "time", "because / so that"] },
+
+  // ---------- Grammar ----------
+  { t: "Present Simple vs Present Continuous", lv: "Grammar",
+    g: "Talk about habits and about right now without mixing them.",
+    note: { rule: "Simple = habits & facts (he/she/it + s). Continuous = happening now / temporary.",
+            ok: ["I usually walk to work, but today I'm taking the bus.", "She works in a bank."],
+            bad: ["I am going to office daily.", "She work in a bank.", "He don't like tea."] },
+    m: "Ask me 8 quick questions that mix habits and right now (e.g. 'What do you usually do on Sundays?', 'What are you doing these days?'). Then give me 6 fill-in-the-blank sentences with the correct form.",
+    w: ["I usually …", "He works / She goes", "I'm doing … now", "these days", "every day", "at the moment"] },
+  { t: "Past Simple & Irregular Verbs", lv: "Grammar",
+    g: "Tell what happened using correct past forms.",
+    note: { rule: "Use the past form in statements; use did + base verb in questions & negatives.",
+            ok: ["I went to Kochi last week.", "Did you see the match?", "I didn't buy it."],
+            bad: ["Yesterday I go to Kochi.", "I didn't bought it.", "Did you saw the match?"] },
+    m: "Quiz me on 10 common irregular verbs (go, see, buy, take, bring, think, teach, catch, write, speak). Then ask me to describe what I did yesterday from morning to night in the past simple.",
+    w: ["went", "saw", "bought", "took", "did + base verb", "yesterday / last week / ago"] },
+  { t: "Present Perfect vs Past Simple", lv: "Grammar",
+    g: "Know when to say 'I have done' and when to say 'I did'.",
+    note: { rule: "Present perfect = life experience / up to now (no exact time). Past simple = finished time.",
+            ok: ["I have lived here since 2020.", "I have never been to Delhi.", "I visited Delhi in 2019."],
+            bad: ["I have seen him yesterday.", "I am living here since 2020."] },
+    m: "Ask me 'Have you ever…?' questions, and after each 'yes' ask a follow-up in the past simple ('When did you…?'). Then give me 6 sentences to correct.",
+    w: ["have / has + V3", "ever / never", "since / for", "already / yet", "yesterday / in 2019 → past simple"] },
+  { t: "Talking About the Future", lv: "Grammar",
+    g: "Use will, going to and the present continuous for future plans.",
+    note: { rule: "will = quick decision / prediction, going to = plan, present continuous = fixed arrangement.",
+            ok: ["I'll call you later.", "I'm going to learn driving.", "I'm meeting my manager at 3 pm."],
+            bad: ["I will going to learn driving.", "Tomorrow I go to meet him."] },
+    m: "Ask me about my plans for tonight, this weekend, next year and in 5 years. Then give me 5 situations and ask which future form fits best and why.",
+    w: ["I'll …", "I'm going to …", "I'm meeting …", "probably", "I'm planning to", "I hope to"] },
+  { t: "Articles: a, an, the", lv: "Grammar",
+    g: "Stop dropping or overusing a / an / the.",
+    note: { rule: "a/an = one, first mention (an before a vowel sound). the = specific / already known.",
+            ok: ["I bought a phone. The phone is great.", "He is an engineer.", "an hour, a university"],
+            bad: ["He is engineer.", "I love the nature.", "She is a honest person."] },
+    m: "Give me 10 sentences with missing articles, one at a time, for me to fill in. Then ask me to describe my room or my office, and correct every article I use.",
+    w: ["a + consonant sound", "an + vowel sound", "the + specific", "no article: general plurals", "the same / the best"] },
+  { t: "Prepositions: in, on, at", lv: "Grammar",
+    g: "Use the right preposition for time and place.",
+    note: { rule: "Time: at 5 pm, on Monday, in June. Place: at the door, on the table, in the room.",
+            ok: ["I'll see you on Monday at 10 am.", "She lives in Kochi.", "I'm at the office."],
+            bad: ["I'll see you in Monday.", "I reached to home.", "Discuss about it."] },
+    m: "Ask me 10 quick questions about times, dates and places (e.g. 'When is your birthday?', 'Where do you keep your keys?') and correct every preposition. Then point out common Indian-English preposition mistakes I make.",
+    w: ["at + exact time / point", "on + day / date / surface", "in + month / year / inside", "reach home (no 'to')", "discuss it (no 'about')"] },
+
+  // ---------- Questions ----------
+  { t: "Yes / No Questions", lv: "Questions",
+    g: "Form correct yes/no questions with the right helping verb.",
+    note: { rule: "Helping verb + subject + main verb? (Do / Does / Did / Is / Are / Can / Have)",
+            ok: ["Do you like coffee?", "Does she work here?", "Can you help me?"],
+            bad: ["Does she works here?", "You are coming?", "Did you went?"] },
+    m: "Give me 10 statements, one at a time, and ask me to turn each into a yes/no question. Then let me interview you with 5 yes/no questions about your hobbies.",
+    w: ["Do / Does + base verb", "Did + base verb", "Is / Are", "Can / Could", "Have you …?"] },
+  { t: "Wh- Questions", lv: "Questions",
+    g: "Ask What, Where, When, Why, How questions correctly.",
+    note: { rule: "Wh-word + helping verb + subject + main verb?",
+            ok: ["Where do you work?", "Why are you late?", "How long have you lived here?"],
+            bad: ["Where you work?", "Why you are late?", "What you did yesterday?"] },
+    m: "Give me 8 answers and ask me to make the question for each (e.g. answer: 'I live in Kochi' → 'Where do you live?'). Then role-play: I am a journalist interviewing you and I must ask 6 different Wh- questions.",
+    w: ["What", "Where", "When", "Why", "How / How long / How often", "Which / Whose"] },
+  { t: "Who called? vs Who did you call?", lv: "Questions",
+    g: "Understand subject questions and object questions.",
+    note: { rule: "If who/what is the subject, don't use do/does/did.",
+            ok: ["Who called you? (someone called)", "Who did you call? (you called someone)", "What happened?"],
+            bad: ["Who did call you?", "What did happen?"] },
+    m: "Give me 8 sentences and ask me to make one subject question and one object question for each. Then ask me to explain the difference in my own words.",
+    w: ["Who + verb …? (subject)", "Who did you …? (object)", "What happened?", "Which team won?"] },
+  { t: "Polite & Indirect Questions", lv: "Questions",
+    g: "Ask questions politely at work and with strangers.",
+    note: { rule: "After 'Could you tell me…' / 'Do you know…', use normal sentence order (no do / did).",
+            ok: ["Could you tell me where the station is?", "Do you know what time it starts?", "I was wondering if you could help me."],
+            bad: ["Could you tell me where is the station?", "Do you know what time does it start?"] },
+    m: "Give me 8 direct questions and ask me to make them polite / indirect. Then role-play: I ask you, a receptionist, 4 polite questions about an appointment.",
+    w: ["Could you tell me …", "Do you know …", "I was wondering if …", "Would you mind …", "May I ask …"] },
+  { t: "Question Tags & Follow-up Questions", lv: "Questions",
+    g: "Keep conversations going with tags and follow-up questions.",
+    note: { rule: "Positive sentence → negative tag; negative sentence → positive tag. Follow-ups show interest.",
+            ok: ["You're coming, aren't you?", "She didn't call, did she?", "Really? What happened next?"],
+            bad: ["You're coming, isn't it?", "He likes tea, isn't it?"] },
+    m: "Give me 8 sentences to add the correct question tag to. Then tell me short news about your day, and I must reply with a follow-up question each time to keep the chat going.",
+    w: ["…, aren't you?", "…, didn't she?", "…, can't you?", "Really?", "How come?", "What happened next?"] }
+];
+
+function buildGrammarPrompt(d, n) {
+  const note = [d.note.rule, ...d.note.ok.map(x => "Correct: " + x), ...(d.note.bad || []).map(x => "Wrong: " + x)].join("\n");
+  return `You are my friendly and patient English grammar coach. This is Extra Practice ${n}: ${d.lv} (my level: beginner–intermediate, Malayalam speaker).
+
+Topic: ${d.t}
+Goal: ${d.g}
+
+Quick note (the rule I am practising today):
+${note}
+
+Run a 10-minute session in this structure:
+1. Quick lesson (2 min): explain this rule in very simple English in 3-4 lines with 2 more examples. Mention the mistake Indian / Malayalam speakers commonly make here.
+2. Drill & speaking practice (6 min): ${d.m}
+3. Feedback (2 min): review my answers.
+
+Key patterns to use: ${d.w.join(" | ")}.
+
+Rules:
+- Give me ONE question or task at a time and wait for my answer.
+- After each answer say ✅ or ❌. If wrong, show "Better: ..." and explain why in ONE short line.
+- Keep your replies short so that I practise more than you read.
+- Keep count of my correct answers.
+- At the end give me: my score (correct / total), my top 3 mistakes with corrections, and 3 example sentences to memorise today.
+
+Start now with the quick lesson.`;
+}
+
 const MODULES = {
   english: {
     title: "English Communication Practice",
@@ -504,6 +666,7 @@ const MODULES = {
     levels: ["Beginner", "Intermediate", "Advanced"],
     wordsLabel: "Useful words",
     storeKey: "cc-english-done",
+    jump: { label: "✏️ Extra practice: sentence structure, grammar & questions ↓", target: "grammar-extras" },
     days: ENGLISH_DAYS,
     prompt: buildEnglishPrompt
   },
@@ -515,6 +678,18 @@ const MODULES = {
     storeKey: "cc-speaking-done",
     days: SPEAKING_DAYS,
     prompt: buildSpeakingPrompt
+  },
+  grammar: {
+    title: "Extra Practice: Sentence Structure, Grammar & Questions",
+    lead: "Do one of these any day, alongside your daily session — or whenever Gemini keeps correcting the same mistake. Read the quick note first, then practise it with Gemini for 10 minutes.",
+    levels: ["Sentence Structure", "Grammar", "Questions"],
+    ranges: ["1–5", "6–11", "12–16"],
+    allLabel: "All extras",
+    prefix: "Extra",
+    wordsLabel: "Key patterns",
+    storeKey: "cc-grammar-done",
+    days: GRAMMAR_DAYS,
+    prompt: buildGrammarPrompt
   }
 };
 
@@ -578,13 +753,14 @@ function renderModule(key) {
   const mod = MODULES[key];
   mod.done = loadDone(mod.storeKey);
   const sec = document.querySelector(`[data-module="${key}"]`);
-  const ranges = ["1–10", "11–20", "21–30"];
+  const ranges = mod.ranges || ["1–10", "11–20", "21–30"];
   sec.innerHTML = `
     <h1>${esc(mod.title)}</h1>
     <p class="lead">${esc(mod.lead)}</p>
+    ${mod.jump ? `<button class="jump">${esc(mod.jump.label)}</button>` : ""}
     <div class="toolbar">
       <div class="filters">
-        <button data-level="all" class="active">All days</button>
+        <button data-level="all" class="active">${mod.allLabel || "All days"}</button>
         ${mod.levels.map((l, i) => `<button data-level="${l}">${l} (${ranges[i]})</button>`).join("")}
       </div>
       <div class="progress">
@@ -593,6 +769,8 @@ function renderModule(key) {
       </div>
     </div>
     <div class="days">${mod.days.map((d, i) => dayCard(mod, d, i + 1)).join("")}</div>`;
+  if (mod.jump) sec.querySelector(".jump").addEventListener("click", () =>
+    document.getElementById(mod.jump.target).scrollIntoView({ behavior: "smooth" }));
   updateProgress(key);
 
   sec.querySelector(".days").addEventListener("click", e => {
@@ -626,13 +804,17 @@ function dayCard(mod, d, n) {
     <article class="card ${isDone ? "done" : ""}" data-n="${n}" data-level="${d.lv}">
       <div class="body">
         <div class="meta">
-          <span class="day">Day ${n}</span>
+          <span class="day">${mod.prefix || "Day"} ${n}</span>
           <span class="lvl">${d.lv}</span>
           <span class="time">⏱ 10 min</span>
           <span class="done-badge">✓ Completed</span>
         </div>
         <h3>${esc(d.t)}</h3>
         <p class="goal">${esc(d.g)}</p>
+        ${d.note ? `<div class="note">
+          <p><b>📝 Quick note:</b> ${esc(d.note.rule)}</p>
+          <ul>${d.note.ok.map(x => `<li class="ok">✔ ${esc(x)}</li>`).join("")}${(d.note.bad || []).map(x => `<li class="bad">✘ ${esc(x)}</li>`).join("")}</ul>
+        </div>` : ""}
         <p class="label">${mod.wordsLabel}</p>
         <div class="words">${d.w.map(w => `<span>${esc(w)}</span>`).join("")}</div>
         <details>
