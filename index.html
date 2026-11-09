@@ -127,6 +127,19 @@
   .note .ok { color: var(--good); }
   .note .bad { color: #d64545; text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (prefers-color-scheme: dark) { .note .bad { color: #ff8080; } }
+  .phase-banner { grid-column: 1 / -1; background: linear-gradient(135deg, var(--accent), #8a5cf6); color: #fff;
+          border-radius: 14px; padding: 18px 20px; margin-top: 8px; }
+  .phase-banner h2 { margin: 0 0 4px; font-size: 1.25rem; }
+  .phase-banner p { margin: 0; opacity: .92; font-size: .92rem; }
+  .group-head { grid-column: 1 / -1; margin: 14px 0 -4px; }
+  .group-head h3 { margin: 0; font-size: 1.02rem; }
+  .group-head p { margin: 2px 0 0; color: var(--muted); font-size: .88rem; }
+  .resume { border: 0; background: var(--good); color: #fff; font: inherit; font-weight: 700; font-size: .95rem;
+          padding: 10px 18px; border-radius: 10px; cursor: pointer; margin: 0 8px 20px 0; max-width: 100%; text-align: left; }
+  .tip { font-size: .85rem; color: var(--muted); margin: -4px 0 12px; }
+  .card { scroll-margin-top: 90px; }
+  .card.flash { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 40% { box-shadow: 0 0 0 4px var(--good); } 100% { box-shadow: var(--shadow); } }
   .extra-block { scroll-margin-top: 80px; margin-top: 48px; padding-top: 32px; border-top: 2px dashed var(--border); }
   .extra-block h1 { font-size: 1.4rem; }
   .jump { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); font: inherit;
@@ -199,7 +212,7 @@
       <button class="module" data-goto="english">
         <div class="icon">🗣️</div>
         <h3>English Communication</h3>
-        <p>30 daily speaking sessions — from self-introduction to job interviews and debates.</p>
+        <p>100-day program: 30 days to speak with confidence fast, then 70 days to make it accurate and permanent.</p>
         <span class="tag">Start practicing →</span>
       </button>
       <button class="module" data-goto="speaking">
@@ -244,9 +257,16 @@
       <li>Use Gemini's microphone or Live mode to <b>speak</b> your answers.</li>
       <li>Come back and tap <b>Mark as done</b> to track your progress.</li>
     </ol>
+    <h2>The 100-day English plan</h2>
+    <ol class="steps">
+      <li><b>Phase 1 · Fast Track · Days 1–30</b><br>Speak with confidence, fast. Fluency first — only your biggest mistakes get corrected.</li>
+      <li><b>Phase 2 · Lock It In · Days 31–100</b><br>10 themed weeks to make your English accurate, natural and permanent.</li>
+      <li><b>Every Phase 2 week</b><br>5 new topics → 🔧 Fix-It day (your repeated mistakes) → 🔁 Review day (revisits earlier topics).</li>
+      <li><b>Day 99 &amp; 100</b><br>A final speaking test with a level estimate, then your English-for-life routine.</li>
+    </ol>
     <h2>The 10-minute plan</h2>
     <ol class="steps">
-      <li><b>Warm-up · 2 min</b><br>Two easy questions on the topic.</li>
+      <li><b>Warm-up / Recall · 2 min</b><br>Two easy questions — or, in Phase 2, recall words and sentences from your last session.</li>
       <li><b>Main practice · 6 min</b><br>Conversation or role-play, one question at a time, with gentle corrections.</li>
       <li><b>Feedback · 2 min</b><br>Scores, your top 3 mistakes and one sentence to remember.</li>
     </ol>
@@ -378,9 +398,9 @@ const ENGLISH_DAYS = [
     g: "Explain steps clearly using sequence language.",
     m: "Ask me to explain a process I know well (cooking a dish, using an app, or a task at work). Ask clarifying questions as if you were a beginner.",
     w: ["first", "next", "make sure", "once you've", "otherwise", "finally"] },
-  { t: "Future Goals & Final Review", lv: "Advanced",
-    g: "Talk about your goals and reflect on your 30-day progress.",
-    m: "Ask me about my short-term and long-term goals and how English will help me. Then ask me to reflect on what I learned in these 30 days and give me a final overall assessment.",
+  { t: "Future Goals & Confidence Check", lv: "Advanced",
+    g: "Talk about your goals and check how far you've come in 30 days.",
+    m: "Ask me about my short-term and long-term goals and how English will help me. Then ask me to reflect on what I learned in these 30 days, give me an honest assessment of my confidence and level, and tell me the 3 things I should focus on in Phase 2 (Days 31–100).",
     w: ["aspire to", "long-term", "in five years", "determined", "progress", "I've improved"] }
 ];
 
@@ -659,15 +679,323 @@ Rules:
 Start now with the quick lesson.`;
 }
 
+// ---------- Phase 2: Lock It In (Days 31–100) ----------
+// Weeks 1–9 follow the same rhythm: 5 new topics → 🔧 Fix-It day → 🔁 Review day.
+// `fix` is the Extra Practice number used on that week's Fix-It day.
+const LOCK_WEEKS = [
+  { theme: "Thinking in English", fix: 6,
+    about: "Stop translating from Malayalam in your head — start thinking directly in English.",
+    days: [
+      { t: "Self-Talk: Narrate Your Day",
+        g: "Describe what you are doing, live, in English.",
+        m: "Ask me to narrate what I am doing right now and what I can see around me, like a live commentary, using the present continuous. Then ask me to narrate my usual morning in the present simple. Whenever I stop for more than a few seconds, prompt me with 'And then?'.",
+        w: ["right now", "I'm about to", "I can see", "around me", "meanwhile", "next, I'm going to"] },
+      { t: "Describe a Scene",
+        g: "Describe places and scenes in detail without translating.",
+        m: "Name a scene (a busy market, a railway station, a Kerala wedding, a beach at sunset) and ask me to describe it for 1 minute as if I were looking at a photo: people, colours, sounds and actions. Do 3 scenes.",
+        w: ["in the foreground", "in the background", "on the left", "there are", "it looks like", "seems to be"] },
+      { t: "Thinking Out Loud: Decisions",
+        g: "Talk through a decision step by step in English.",
+        m: "Give me 3 everyday decisions (what to cook tonight, whether to buy a new phone, how to spend a long weekend). For each one, I think aloud for 1 minute, weighing the options, and then decide.",
+        w: ["on one hand", "on the other hand", "I'm torn between", "it depends on", "the downside is", "I'll probably go with"] },
+      { t: "Explain It Without the Word",
+        g: "Explain anything in simple English when you don't know the exact word.",
+        m: "Play 'describe the word': give me 6 words (include Kerala things like puttu, kasavu saree, chenda) and I explain each in English without saying it. Then you describe 4 words and I guess them.",
+        w: ["it's a kind of", "it's used for", "it's similar to", "it's made of", "people usually", "the thing that"] },
+      { t: "One-Minute Answers",
+        g: "Answer any question with a full minute of speech.",
+        m: "Ask me 5 simple questions (my favourite festival, my best teacher, a place I want to visit, my favourite food, my dream job). For each, I must keep talking for 1 minute. If I stop early, ask 'What else?' or 'Why?'.",
+        w: ["let me think", "the main reason is", "apart from that", "what's more", "another thing is", "all in all"] }
+    ] },
+  { theme: "Real-Life Errands", fix: 15,
+    about: "Handle everyday situations outside home calmly and politely.",
+    days: [
+      { t: "At the Bank",
+        g: "Open an account and sort out a banking problem.",
+        m: "Role-play: you are a bank officer. First I want to open a savings account; then I complain about money that was deducted but the transaction failed. Ask realistic questions.",
+        w: ["account", "transaction", "deposit", "withdraw", "statement", "I'd like to"] },
+      { t: "Renting a House",
+        g: "Talk to a landlord about rent, rules and repairs.",
+        m: "Role-play: you are a landlord. I ask about a flat (rent, advance, rules), then I call you a month later about a leaking tap that hasn't been fixed.",
+        w: ["rent", "advance", "agreement", "maintenance", "leaking", "is it possible to"] },
+      { t: "At the Service Centre",
+        g: "Explain a problem with your vehicle or phone and understand the estimate.",
+        m: "Role-play: you work at a service centre. I explain that my bike (or phone) has a problem, ask about the cost and time, and question an unexpected extra charge.",
+        w: ["it's making a noise", "it keeps", "estimate", "warranty", "ready by", "why is there an extra charge"] },
+      { t: "Offices & Applications",
+        g: "Ask about forms, documents and the status of an application.",
+        m: "Role-play: you are an officer at a passport (or government) office. I ask which documents I need, where to submit them, and later follow up on a delayed application.",
+        w: ["application", "documents", "proof of address", "appointment", "status", "how long will it take"] },
+      { t: "Helping a Foreign Tourist",
+        g: "Guide and recommend things to a visitor confidently.",
+        m: "Role-play: you are a foreign tourist in my town. Ask me for directions, the best local food, places to visit and safety tips. Ask follow-up questions like a real tourist.",
+        w: ["let me show you", "it's about … minutes", "I'd recommend", "you must try", "be careful of", "enjoy your stay"] }
+    ] },
+  { theme: "Speaking Accurately", fix: 8,
+    about: "Use the right tense and structure in real conversation, not just in exercises.",
+    days: [
+      { t: "Life Experiences: Have You Ever…?",
+        g: "Talk about experiences with the present perfect.",
+        m: "Ask me 'Have you ever…?' questions about travel, food, sports and adventures. After each answer, ask a follow-up with 'When did you…?' or 'What happened?' so I switch correctly to the past simple.",
+        w: ["have you ever", "I've never", "once", "so far", "since", "for"] },
+      { t: "If I Were…",
+        g: "Talk about imaginary situations with the second conditional.",
+        m: "Ask me imaginary questions: If you won ₹1 crore… If you were the Chief Minister… If you could live anywhere… If you could change one thing about your job… I answer each for 1 minute.",
+        w: ["if I were", "I would", "I wouldn't", "I'd probably", "imagine if", "I'd rather"] },
+      { t: "Regrets & Lessons",
+        g: "Talk about the past you would change, with 'should have' and 'if I had'.",
+        m: "Ask me about decisions I regret or would change (studies, money, friendships, a missed chance) and what I learned. Guide me to use 'I should have…' and 'If I had…, I would have…'.",
+        w: ["I should have", "I shouldn't have", "if I had known", "I wish I had", "looking back", "lesson learned"] },
+      { t: "Reported Speech: What Did They Say?",
+        g: "Report what other people said correctly.",
+        m: "Tell me 6 short things that different people said (my boss, my mother, a doctor). I report each one to a friend using 'He said that…', 'She told me to…', 'He asked me if…'. Then ask me to report a real conversation I had this week.",
+        w: ["he said that", "she told me to", "he asked me if", "she suggested", "he mentioned", "according to her"] },
+      { t: "Comparing Things",
+        g: "Compare people, places and things accurately.",
+        m: "Ask me to compare: Kerala vs another state, city vs village life, two phones, my childhood vs now, two jobs. Make me use comparatives and superlatives correctly.",
+        w: ["better than", "the best", "more … than", "not as … as", "much / far", "whereas"] }
+    ] },
+  { theme: "Vocabulary Power", fix: 10,
+    about: "Replace basic words with natural, everyday English that native speakers use.",
+    days: [
+      { t: "Phrasal Verbs for Daily Life",
+        g: "Use common phrasal verbs naturally.",
+        m: "Teach me 10 common phrasal verbs with one example each. Then ask me 8 personal questions that I must answer using one of them (e.g. 'What do you usually put off?').",
+        w: ["get up", "look after", "run out of", "put off", "figure out", "come across", "give up"] },
+      { t: "Natural Word Partners",
+        g: "Say make / do / take / have with the right words.",
+        m: "Quiz me on collocations: make a decision, do homework, take a break, have a look, pay attention, catch a cold. Then ask me to tell you about my week using at least 6 of them.",
+        w: ["make a decision", "do the dishes", "take a break", "have a look", "pay attention", "catch a cold"] },
+      { t: "Upgrade Your Words",
+        g: "Stop overusing good, bad, very and nice.",
+        m: "Ask me questions about food, films, places and people. Every time I use 'good', 'bad', 'very' or 'nice', stop me and ask me to say it again with a stronger word.",
+        w: ["excellent", "terrible", "delicious", "exhausted", "fascinating", "extremely"] },
+      { t: "Talking About Feelings",
+        g: "Describe emotions precisely.",
+        m: "Describe 6 situations (an exam result, a cancelled trip, a surprise gift, a long queue, a job offer, a fight with a friend) and ask how I would feel and why. Push me to use exact feeling words, not just happy, sad or angry.",
+        w: ["frustrated", "relieved", "overwhelmed", "grateful", "anxious", "thrilled", "disappointed"] },
+      { t: "Everyday Idioms",
+        g: "Understand and use common idioms correctly.",
+        m: "Teach me 8 common idioms with meanings and examples. Then describe situations and ask me which idiom fits, and ask me to use 4 of them in stories from my own life.",
+        w: ["a piece of cake", "break the ice", "under the weather", "once in a blue moon", "on the same page", "hit the nail on the head"] }
+    ] },
+  { theme: "Workplace English", fix: 13,
+    about: "Sound clear, polite and professional at work every day.",
+    days: [
+      { t: "Daily Stand-up Update",
+        g: "Give a short, clear update on your work.",
+        m: "Role-play a daily team stand-up. Ask me what I did yesterday, what I'm doing today and whether anything is blocking me. Then ask 2 follow-up questions like a manager. Repeat it for 3 different days.",
+        w: ["yesterday I worked on", "today I'm planning to", "I'm blocked by", "on track", "I'll need help with", "should be done by"] },
+      { t: "Asking for Help & Clarification",
+        g: "Ask questions at work without feeling shy.",
+        m: "Role-play: you are a senior colleague explaining a task quickly and using some jargon. I must ask for clarification, examples and deadlines until I fully understand.",
+        w: ["could you walk me through", "just to clarify", "when you say … do you mean", "I'm not sure I follow", "could you give an example", "what's the deadline"] },
+      { t: "Saying No Politely",
+        g: "Manage your workload without sounding rude.",
+        m: "Role-play: you are my manager and colleagues giving me extra work, one request at a time. I must say no, delay, or negotiate politely each time.",
+        w: ["I'd love to help, but", "my plate is full right now", "could we push this to", "which should I prioritise", "I can do it by", "let me check and get back to you"] },
+      { t: "Giving & Receiving Feedback",
+        g: "Give feedback kindly and accept it professionally.",
+        m: "First, I give you feedback on your (imaginary) presentation: one positive point and one improvement. Then you give me some tough feedback and I respond professionally.",
+        w: ["I really liked", "one thing you could improve", "have you considered", "thanks for the feedback", "that's fair", "I'll work on it"] },
+      { t: "Talking to Your Boss",
+        g: "Ask for leave, a raise or support with confidence.",
+        m: "Role-play: you are my boss. I ask for 3 days' leave, then ask for a salary review, then raise a problem with a teammate. Respond realistically, including pushing back sometimes.",
+        w: ["do you have a minute", "I wanted to discuss", "would it be possible to", "I'd like to request", "I've taken on", "I'd appreciate your support"] }
+    ] },
+  { theme: "Social Confidence", fix: 16,
+    about: "Make friends, keep conversations going and handle awkward moments.",
+    days: [
+      { t: "Making New Friends",
+        g: "Start a friendship naturally and keep in touch.",
+        m: "Role-play: we meet at a gym, a course or a friend's house. Help me start chatting, find things in common, and suggest meeting again.",
+        w: ["so, what brings you here", "we have that in common", "how long have you", "we should", "let's keep in touch", "I'll message you"] },
+      { t: "Compliments & Thanks",
+        g: "Give and accept compliments and thanks naturally.",
+        m: "Give me 6 situations (a friend's new house, a colleague's good work, a delicious meal, someone helping me). I give a sincere compliment or thanks each time. Then you compliment me and I accept it without saying 'no, no'.",
+        w: ["that's a great", "you're really good at", "I love how you", "thanks, that means a lot", "I really appreciate it", "you made my day"] },
+      { t: "Apologising & Fixing Misunderstandings",
+        g: "Apologise sincerely and clear up confusion.",
+        m: "Give me 5 situations (I forgot a friend's birthday, I was late to a meeting, I misunderstood a message, I broke something I borrowed). I apologise and suggest how to fix it; you respond realistically.",
+        w: ["I'm really sorry", "I didn't mean to", "it was my fault", "let me make it up to you", "I think there's been a misunderstanding", "no hard feelings"] },
+      { t: "Video Call with Family Abroad",
+        g: "Handle calls with relatives and friends in other countries.",
+        m: "Role-play a video call with a cousin living abroad: a bad connection, catching up on news, asking about their life, and planning a visit.",
+        w: ["can you hear me", "you're breaking up", "how's everything over there", "what time is it there", "we miss you", "let's catch up soon"] },
+      { t: "Party & Celebration Talk",
+        g: "Mingle at parties, weddings and functions.",
+        m: "Role-play a wedding reception where I meet 3 different people (the host, a stranger, an old classmate). Help me congratulate, chat and leave each conversation politely.",
+        w: ["congratulations", "what a lovely", "how do you know the couple", "it's been ages", "I'd better get going", "it was lovely seeing you"] }
+    ] },
+  { theme: "Opinions & Discussions", fix: 3,
+    about: "Share opinions clearly, disagree politely and join discussions.",
+    days: [
+      { t: "News & Current Affairs",
+        g: "Talk about what's happening in the world around you.",
+        m: "Ask me about 3 recent news topics I know (technology, sports, my city, the economy). For each, I explain what happened and give my opinion. Ask 'Why do you think that?' after each answer.",
+        w: ["I read that", "apparently", "it seems that", "the main issue is", "it affects", "in the long run"] },
+      { t: "Pros and Cons",
+        g: "Weigh both sides before giving a conclusion.",
+        m: "Give me 3 topics (city vs village life, online vs offline classes, working abroad vs at home). For each, I give 2 pros, 2 cons and my final view.",
+        w: ["the main advantage", "a major drawback", "on the plus side", "weighing both sides", "overall", "it's worth it"] },
+      { t: "Agreeing & Disagreeing Naturally",
+        g: "Agree and disagree without sounding rude or flat.",
+        m: "Make 8 strong statements one by one (e.g. 'Social media does more harm than good'). I must agree or disagree using a different phrase each time and give a reason.",
+        w: ["exactly", "I couldn't agree more", "I see what you mean, but", "I'm not so sure", "fair point", "that's not always true"] },
+      { t: "Solving a Problem Together",
+        g: "Suggest ideas and reach a decision with someone.",
+        m: "Role-play: we are planning something together (an office trip with a small budget, a family function, fixing a team problem). Suggest ideas, reject some of mine, and help us agree on a plan.",
+        w: ["what if we", "how about", "that might not work because", "the best option is", "let's go with", "agreed"] },
+      { t: "Group Discussion Practice",
+        g: "Enter a discussion, add value and summarise.",
+        m: "Run a group discussion where you play 3 participants with different views on a topic (e.g. 'Should Malayalam be compulsory in all schools?'). I must join in politely, respond to others and summarise at the end.",
+        w: ["if I may jump in", "building on that", "to add to what … said", "let's come back to", "I respectfully disagree", "to sum up"] }
+    ] },
+  { theme: "Long Answers & Storytelling", fix: 7,
+    about: "Speak for 2–3 minutes at a stretch, with clear structure.",
+    days: [
+      { t: "Describe a Film or Series",
+        g: "Summarise a story and give a review.",
+        m: "Ask me to describe a film or series I like: the plot (without too many spoilers), the characters, what I liked and didn't like, and who should watch it. Then ask 3 follow-up questions.",
+        w: ["it's about", "the plot", "the main character", "what I liked most", "the only thing I didn't like", "I'd highly recommend it"] },
+      { t: "A Turning Point in My Life",
+        g: "Tell an important life story with feeling and order.",
+        m: "Ask me to tell the story of a turning point in my life (a move, a job, a loss, a decision) in about 2 minutes. Ask questions to bring out details, feelings and what changed.",
+        w: ["everything changed when", "at first", "gradually", "I realised", "if it hadn't been for", "today I"] },
+      { t: "Summarise an Article",
+        g: "Retell information clearly in your own words.",
+        m: "Give me a short paragraph (about 120 words) on an interesting topic. Ask me to read it, then summarise it aloud in my own words in 45 seconds and give my opinion. Do it twice.",
+        w: ["the article is about", "the main point is", "according to", "in short", "what surprised me", "my take is"] },
+      { t: "Teach Me Something",
+        g: "Explain a skill clearly from start to finish.",
+        m: "Ask me to teach you something I know well (a recipe, a game, a software tool, a hobby) step by step for 2 minutes. Act as a curious beginner and ask clarifying questions.",
+        w: ["the first thing you need", "the key is", "a common mistake is", "once you've", "make sure", "that's it"] },
+      { t: "Two-Minute Monologue Challenge",
+        g: "Speak for 2 minutes without stopping, on any topic.",
+        m: "Give me 3 random topics, one at a time. For each, I get 15 seconds to think, then speak for 2 minutes without stopping. Count my long pauses and filler words.",
+        w: ["let me start with", "moving on", "for example", "what I mean is", "coming back to", "to wrap up"] }
+    ] },
+  { theme: "Speaking Under Pressure", fix: 11,
+    about: "Stay calm and fluent when things are fast, unexpected or stressful.",
+    days: [
+      { t: "Rapid-Fire Questions",
+        g: "Answer quickly without freezing.",
+        m: "Ask me 15 quick, random questions, one after another. I have to start answering within 3 seconds and give 2–3 sentences each. Note the questions where I froze and repeat them at the end.",
+        w: ["good question", "off the top of my head", "honestly", "I'd say", "it's hard to choose, but", "probably"] },
+      { t: "When You Don't Understand",
+        g: "Handle fast speech and accents without panic.",
+        m: "Speak to me like a fast native speaker using slang and idioms. I must politely ask you to repeat, slow down or explain, and then confirm what I understood.",
+        w: ["sorry, could you say that again", "a bit slower, please", "did you say", "what does … mean", "so you mean", "just to make sure I understood"] },
+      { t: "Recovering from Mistakes & Blanks",
+        g: "Keep going when you forget a word or make a mistake.",
+        m: "Ask me difficult questions. Whenever I get stuck or make a mistake, coach me to recover smoothly with a phrase instead of stopping or switching to Malayalam.",
+        w: ["let me rephrase that", "what I meant was", "sorry, I mean", "how do you say", "it's on the tip of my tongue", "anyway, the point is"] },
+      { t: "Emergency Situations",
+        g: "Speak clearly and quickly when something goes wrong.",
+        m: "Role-play 4 urgent situations: a road accident, a lost wallet abroad, a sick family member at night, and a stuck lift. I must explain what happened and ask for help clearly.",
+        w: ["please help", "it's urgent", "call an ambulance", "I've lost my", "someone's been hurt", "as soon as possible"] },
+      { t: "Surprise Interview Round",
+        g: "Handle an unexpected interview with confidence.",
+        m: "Without warning, start a job interview for a role I choose. Mix easy, tough and strange questions ('Sell me this pen', 'Why should we not hire you?'). Keep the pressure on.",
+        w: ["I'm glad you asked", "in my previous role", "a good example is", "I'm confident that", "what excites me is", "I'd bring"] }
+    ] }
+];
+
+// Week 10 (Days 94–100): all special days.
+const MASTERY_WEEK = {
+  theme: "Mastery: Fix It Forever",
+  about: "Bring everything together, measure your progress and build a habit for life.",
+  days: [
+    { t: "Grand Review: Everyday Life",
+      g: "Handle everyday conversations smoothly and accurately.",
+      m: "Run 4 quick role-plays back to back: ordering food, a shopping problem, a bank visit and a doctor's appointment. Score me on each and show me how much better I can still say one sentence from each.",
+      w: ["I'd like", "could you", "unfortunately", "I've been feeling", "is it possible to", "thanks for your help"] },
+    { t: "Grand Review: Work & Career",
+      g: "Sound professional in every common work situation.",
+      m: "Run 4 quick scenarios: a stand-up update, asking my boss for something, a client call about a delay, and 'Tell me about yourself' in an interview. Correct everything and score me.",
+      w: ["on track", "I wanted to discuss", "I'm calling regarding", "my background is in", "next steps", "I'll keep you updated"] },
+    { t: "Grand Review: Opinions & Stories",
+      g: "Combine opinions, stories and summaries fluently.",
+      m: "Ask me for: one opinion with reasons (1 minute), one personal story (2 minutes), and one comparison (1 minute). Then debate one of my opinions with me.",
+      w: ["in my opinion", "I'll never forget", "whereas", "on the other hand", "that's why", "to sum up"] },
+    { t: "Speed & Fluency Day",
+      g: "Push your speaking speed and smoothness to the limit.",
+      m: "Give me 3 topics. For each, I speak for 2 minutes non-stop. Count my filler words and long pauses. Then repeat the first topic and see if I beat my own score.",
+      w: ["first of all", "what's more", "for instance", "having said that", "the thing is", "all in all"] },
+    { t: "Real Conversation, No Script",
+      g: "Have a natural 8-minute chat like with an English-speaking friend.",
+      m: "Just have a natural, friendly conversation with me about anything — my life, plans, opinions, funny stories. Do NOT correct me during the chat; note my mistakes quietly and give them all at the end.",
+      w: ["by the way", "that reminds me", "no way!", "seriously?", "fair enough", "anyway"] },
+    { t: "Final Assessment: The 100-Day Test",
+      g: "Measure exactly how far your English has come.",
+      m: "Give me a 5-part speaking test: (1) self-introduction, (2) a 2-minute story, (3) an opinion question, (4) a short role-play, (5) 3 surprise questions. At the end estimate my level (CEFR A2 / B1 / B2 / C1) with reasons, and list my strengths and my remaining weak points.",
+      w: ["originally from", "looking back", "I'd argue that", "could you clarify", "I'm confident that", "I've improved"] },
+    { t: "🎓 Graduation: My English-for-Life Plan",
+      g: "Celebrate 100 days and build a habit that keeps your English strong forever.",
+      m: "Ask me to give a 2-minute 'graduation speech' about my 100-day journey. Then help me design a simple lifelong routine (e.g. 10 minutes of self-talk daily, one English podcast or video, one weekly conversation, revisiting my mistake list) and write it as a weekly plan I can follow.",
+      w: ["when I started", "the biggest change", "I'm proud that", "from now on", "every day I will", "the journey continues"] }
+  ]
+};
+
+function buildEnglish100() {
+  const days = ENGLISH_DAYS.map(d => ({ ...d, grp: "fast" }));
+  const headers = {
+    1: { phase: "Phase 1 · Fast Track (Days 1–30)",
+         phaseSub: "Goal: speak with confidence, fast. Fluency comes first — Gemini corrects only your 1–2 biggest mistakes per answer so you keep talking and build courage.",
+         title: "Days 1–10 · Beginner", sub: "Everyday basics: introductions, routines, family, shopping, directions." },
+    11: { title: "Days 11–20 · Intermediate", sub: "Small talk, stories, opinions, plans, travel and polite complaints." },
+    21: { title: "Days 21–30 · Advanced", sub: "Interviews, meetings, presentations, debates and negotiation." }
+  };
+  let n = 31;
+  LOCK_WEEKS.forEach((wk, i) => {
+    const k = i + 1, lv = `Week ${k} · ${wk.theme}`, start = n;
+    headers[start] = { title: `Week ${k} · Days ${start}–${start + 6} — ${wk.theme}`, sub: wk.about };
+    wk.days.forEach(d => { days.push({ ...d, lv, theme: wk.theme, grp: "lock" }); n++; });
+
+    const gx = GRAMMAR_DAYS[wk.fix - 1];
+    days.push({
+      t: `🔧 Fix-It Day: ${gx.t}`, lv, theme: wk.theme, grp: "lock",
+      g: "Find the mistakes you repeated this week and fix them before they become habits.",
+      note: gx.note,
+      tip: `Want more on this? Do Extra ${wk.fix} in the Extra Practice section below.`,
+      m: `Ask me 6 questions about this week's topics (${wk.days.map(x => x.t).join(", ")}) and collect every mistake I make. Then take my 3 most repeated mistakes and drill each one: explain the rule in one line and make me say 3 correct sentences with it. Finish with a short drill on today's grammar focus — ${gx.t}: ${gx.note.rule}`,
+      w: gx.w
+    });
+    n++;
+
+    const rv = [3 * k - 2, 3 * k - 1, 3 * k];
+    const words = wk.days.map(x => x.w[1]).concat(wk.days[0].w[2]);
+    days.push({
+      t: `🔁 Weekly Review + Revisit Days ${rv[0]}–${rv[2]}`, lv, theme: wk.theme, grp: "lock",
+      g: "Reuse this week's words and revisit three early topics — repeating them at a higher level is what makes English stick for good.",
+      m: `Part 1: quiz me on these words from this week: ${words.join(", ")}. I must use each one in my own sentence. Part 2: revisit three topics from Phase 1 — ${rv.map(x => `Day ${x} (${ENGLISH_DAYS[x - 1].t})`).join(", ")}. Ask me one question on each and make me answer for at least 1 minute, with better grammar and richer vocabulary than I could in the first 30 days.`,
+      w: words
+    });
+    n++;
+  });
+  headers[n] = { title: `Week 10 · Days ${n}–100 — ${MASTERY_WEEK.theme}`, sub: MASTERY_WEEK.about };
+  MASTERY_WEEK.days.forEach(d => days.push({ ...d, lv: `Week 10 · Mastery`, theme: MASTERY_WEEK.theme, grp: "lock" }));
+  headers[31].phase = "Phase 2 · Lock It In (Days 31–100)";
+  headers[31].phaseSub = "Goal: make it accurate, natural and permanent. Each week has 5 new real-life topics, a 🔧 Fix-It day for the mistakes you keep repeating, and a 🔁 Review day that brings back earlier topics (spaced repetition). Every session starts with a quick recall of your last one.";
+  return { days, headers };
+}
+const ENGLISH_100 = buildEnglish100();
+
 const MODULES = {
   english: {
-    title: "English Communication Practice",
-    lead: "One topic per day, 10 minutes each. Read the topic and useful words, then tap the Gemini button on the right to start your session.",
-    levels: ["Beginner", "Intermediate", "Advanced"],
+    title: "English Communication — 100-Day Program",
+    lead: "10 minutes a day for 100 days. Phase 1 (Days 1–30) gets you speaking with confidence, fast. Phase 2 (Days 31–100) fixes your English for good. Read the topic and words, then tap the Gemini button to start.",
+    filters: [
+      { value: "fast", label: "Phase 1 · Fast Track (1–30)" },
+      { value: "lock", label: "Phase 2 · Lock It In (31–100)" }
+    ],
+    allLabel: "All 100 days",
+    resume: true,
+    headers: ENGLISH_100.headers,
     wordsLabel: "Useful words",
     storeKey: "cc-english-done",
     jump: { label: "✏️ Extra practice: sentence structure, grammar & questions ↓", target: "grammar-extras" },
-    days: ENGLISH_DAYS,
+    days: ENGLISH_100.days,
     prompt: buildEnglishPrompt
   },
   speaking: {
@@ -686,6 +1014,8 @@ const MODULES = {
     ranges: ["1–5", "6–11", "12–16"],
     allLabel: "All extras",
     prefix: "Extra",
+    firstStep: "Quick lesson · 2 min",
+    mainStep: "Drill & speaking · 6 min",
     wordsLabel: "Key patterns",
     storeKey: "cc-grammar-done",
     days: GRAMMAR_DAYS,
@@ -718,13 +1048,31 @@ Start now with a short motivating greeting and the warm-up.`;
 }
 
 function buildEnglishPrompt(d, n) {
-  return `You are my friendly and patient English communication coach. This is Day ${n} of my 30-day speaking practice (Level: ${d.lv}).
+  const fast = n <= 30;
+  const intro = fast
+    ? `This is Day ${n} of my 100-day English speaking program — Phase 1: Fast Track (Days 1–30). The goal of this phase is to make me speak English with confidence, fast. My level: ${d.lv}.`
+    : `This is Day ${n} of my 100-day English speaking program — Phase 2: Lock It In (Days 31–100). The goal of this phase is to make my English accurate, natural and permanent. This week's theme: ${d.theme}.`;
+  const step1 = fast
+    ? "Warm-up (2 min): ask me 2 easy questions about the topic."
+    : "Recall (2 min): ask me to say 3 words or sentences I remember from my last session and use each one in a new sentence. Then ask 1 easy question on today's topic.";
+  const rules = fast ? [
+    'Focus on fluency and confidence first: correct only the 1–2 most important mistakes in each answer, like this: "Better: ...".',
+    "Praise what I did well and keep me talking. Never make me feel bad about mistakes."
+  ] : [
+    'Focus on accuracy: correct every mistake like this: "Better: ...", and ask me to repeat the corrected sentence once.',
+    "If I repeat a mistake from earlier in this chat, point it out so it does not become a habit.",
+    "Push me to give longer answers (at least 4–5 sentences)."
+  ];
+  const ending = fast
+    ? "a score out of 10 for Fluency, Grammar, Vocabulary and Confidence; my top 3 mistakes with corrections; and 1 useful sentence to remember today"
+    : "a score out of 10 for Fluency, Accuracy and Vocabulary; my top 3 mistakes with corrections, written as a short list I can add to my personal mistake list; and 1 useful sentence to remember today";
+  return `You are my friendly and patient English communication coach. ${intro}
 
-Topic: ${d.t}
+Topic: ${d.t.replace(/^\W+\s*/, "")}
 Goal: ${d.g}
 
 Run a 10-minute session in this structure:
-1. Warm-up (2 min): ask me 2 easy questions about the topic.
+1. ${step1}
 2. Main practice (6 min): ${d.m}
 3. Feedback (2 min): summarise how I did.
 
@@ -733,12 +1081,12 @@ Useful words I should try to use: ${d.w.join(", ")}.
 Rules:
 - Ask only ONE question at a time and wait for my answer.
 - Keep your replies short (2-3 sentences) so that I speak more than you.
-- After each answer, gently correct my mistakes like this: "Better: ..." and suggest a more natural phrase when useful.
+${rules.map(r => "- " + r).join("\n")}
 - If I get stuck or use Malayalam, help me say it in simple English.
 - Encourage me to use the useful words above.
-- At the end give me: a score out of 10 for Fluency, Grammar and Vocabulary; my top 3 mistakes with corrections; and 1 useful sentence to remember today.
+- At the end give me: ${ending}.
 
-Start now with a short greeting and the first warm-up question.`;
+Start now with a short greeting and the first ${fast ? "warm-up" : "recall"} question.`;
 }
 
 let iconId = 0;
@@ -757,18 +1105,28 @@ function renderModule(key) {
   sec.innerHTML = `
     <h1>${esc(mod.title)}</h1>
     <p class="lead">${esc(mod.lead)}</p>
+    ${mod.resume ? `<button class="resume"></button>` : ""}
     ${mod.jump ? `<button class="jump">${esc(mod.jump.label)}</button>` : ""}
     <div class="toolbar">
       <div class="filters">
         <button data-level="all" class="active">${mod.allLabel || "All days"}</button>
-        ${mod.levels.map((l, i) => `<button data-level="${l}">${l} (${ranges[i]})</button>`).join("")}
+        ${(mod.filters || mod.levels.map((l, i) => ({ value: l, label: `${l} (${ranges[i]})` })))
+            .map(f => `<button data-level="${f.value}">${f.label}</button>`).join("")}
       </div>
       <div class="progress">
         <span class="ptext"></span>
         <div class="track"><div class="fill"></div></div>
       </div>
     </div>
-    <div class="days">${mod.days.map((d, i) => dayCard(mod, d, i + 1)).join("")}</div>`;
+    <div class="days">${mod.days.map((d, i) => groupHead(mod, d, i + 1) + dayCard(mod, d, i + 1)).join("")}</div>`;
+  if (mod.resume) sec.querySelector(".resume").addEventListener("click", () => {
+    const n = nextDay(mod);
+    if (!n) return;
+    sec.querySelector('.filters [data-level="all"]').click();
+    const card = sec.querySelector(`.card[data-n="${n}"]`);
+    card.scrollIntoView({ behavior: "smooth", block: "start" });
+    card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+  });
   if (mod.jump) sec.querySelector(".jump").addEventListener("click", () =>
     document.getElementById(mod.jump.target).scrollIntoView({ behavior: "smooth" }));
   updateProgress(key);
@@ -794,14 +1152,14 @@ function renderModule(key) {
     if (!b) return;
     sec.querySelectorAll(".filters button").forEach(x => x.classList.toggle("active", x === b));
     const lv = b.dataset.level;
-    sec.querySelectorAll(".card").forEach(c => c.style.display = (lv === "all" || c.dataset.level === lv) ? "" : "none");
+    sec.querySelectorAll(".card, .phase-banner, .group-head").forEach(c => c.style.display = (lv === "all" || c.dataset.level === lv) ? "" : "none");
   });
 }
 
 function dayCard(mod, d, n) {
   const isDone = mod.done.has(n);
   return `
-    <article class="card ${isDone ? "done" : ""}" data-n="${n}" data-level="${d.lv}">
+    <article class="card ${isDone ? "done" : ""}" data-n="${n}" data-level="${d.grp || d.lv}">
       <div class="body">
         <div class="meta">
           <span class="day">${mod.prefix || "Day"} ${n}</span>
@@ -815,13 +1173,14 @@ function dayCard(mod, d, n) {
           <p><b>📝 Quick note:</b> ${esc(d.note.rule)}</p>
           <ul>${d.note.ok.map(x => `<li class="ok">✔ ${esc(x)}</li>`).join("")}${(d.note.bad || []).map(x => `<li class="bad">✘ ${esc(x)}</li>`).join("")}</ul>
         </div>` : ""}
+        ${d.tip ? `<p class="tip">💡 ${esc(d.tip)}</p>` : ""}
         <p class="label">${mod.wordsLabel}</p>
         <div class="words">${d.w.map(w => `<span>${esc(w)}</span>`).join("")}</div>
         <details>
           <summary>Session plan &amp; prompt</summary>
           <ol class="plan">
-            <li>Warm-up · 2 min</li>
-            <li>Main practice · 6 min — ${esc(d.m)}</li>
+            <li>${d.grp === "lock" ? "Recall · 2 min" : (mod.firstStep || "Warm-up · 2 min")}</li>
+            <li>${mod.mainStep || "Main practice · 6 min"} — ${esc(d.m)}</li>
             <li>Feedback · 2 min</li>
           </ol>
           <pre class="prompt">${esc(mod.prompt(d, n))}</pre>
@@ -840,11 +1199,30 @@ function dayCard(mod, d, n) {
     </article>`;
 }
 
+function groupHead(mod, d, n) {
+  const h = mod.headers && mod.headers[n];
+  if (!h) return "";
+  const grp = d.grp || d.lv;
+  return (h.phase ? `<div class="phase-banner" data-level="${grp}"><h2>${esc(h.phase)}</h2><p>${esc(h.phaseSub)}</p></div>` : "")
+    + `<div class="group-head" data-level="${grp}"><h3>${esc(h.title)}</h3><p>${esc(h.sub)}</p></div>`;
+}
+
+function nextDay(mod) {
+  for (let i = 1; i <= mod.days.length; i++) if (!mod.done.has(i)) return i;
+  return 0;
+}
+
 function updateProgress(key) {
   const mod = MODULES[key];
   const sec = document.querySelector(`[data-module="${key}"]`);
   sec.querySelector(".ptext").textContent = `${mod.done.size} / ${mod.days.length} done`;
   sec.querySelector(".fill").style.width = `${(mod.done.size / mod.days.length) * 100}%`;
+  if (mod.resume) {
+    const n = nextDay(mod);
+    sec.querySelector(".resume").textContent = n
+      ? `▶ ${mod.done.size ? "Continue" : "Start"}: Day ${n} — ${mod.days[n - 1].t}`
+      : `🎓 All ${mod.days.length} days completed — congratulations!`;
+  }
 }
 
 let toastTimer;
