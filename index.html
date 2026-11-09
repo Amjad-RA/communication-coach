@@ -59,7 +59,7 @@
   /* Bottom tab bar on phones */
   #tabs {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
     background: #fff; border-top: 1px solid var(--border);
     padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
     box-shadow: 0 -6px 18px rgba(22, 72, 40, .07);
@@ -67,7 +67,7 @@
   #tabs button {
     border: 0; background: none; color: var(--muted); cursor: pointer;
     display: flex; flex-direction: column; align-items: center; gap: 2px;
-    font-size: .72rem; font-weight: 800; padding: 6px 0; border-radius: 14px; transition: background .2s, color .2s;
+    font-size: .68rem; font-weight: 800; padding: 6px 0; border-radius: 14px; transition: background .2s, color .2s;
   }
   #tabs svg { width: 24px; height: 24px; }
   #tabs button.active { color: var(--green-strong); background: var(--green-soft); }
@@ -125,6 +125,18 @@
   .wotd small { font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: #8a5a00; }
   .wotd b { display: block; font-size: 1.1rem; font-weight: 900; }
   .wotd p { margin: 2px 0 0; font-size: .85rem; color: var(--muted); }
+  .totd {
+    display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; margin-top: 12px; cursor: pointer;
+    background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 14px; box-shadow: var(--shadow);
+    color: inherit; font: inherit; transition: transform .15s, border-color .15s;
+  }
+  .totd:hover { border-color: var(--green); }
+  .totd:active { transform: scale(.98); }
+  .totd .big { font-size: 1.6rem; line-height: 1; align-self: flex-start; }
+  .totd > div:nth-child(2) { flex: 1; min-width: 0; }
+  .totd small { font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--green-strong); }
+  .totd b { display: block; font-size: 1.05rem; font-weight: 900; }
+  .totd p { margin: 2px 0 0; font-size: .85rem; color: var(--muted); }
 
   .modules { display: grid; gap: 10px; }
   .module {
@@ -137,7 +149,8 @@
   .m-icon { flex: 0 0 auto; width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center; font-size: 1.6rem; background: var(--green-soft); }
   .module:nth-child(2) .m-icon { background: #e4f3ff; }
   .module:nth-child(3) .m-icon { background: var(--sun-soft); }
-  .module:nth-child(n+4) .m-icon { background: #f0f2f0; }
+  .module:nth-child(4) .m-icon { background: #f1ebff; }
+  .module:nth-child(n+5) .m-icon { background: #f0f2f0; }
   .m-body { flex: 1; min-width: 0; }
   .m-body b { display: block; font-weight: 900; font-size: 1rem; }
   .m-body small { display: block; color: var(--muted); font-size: .82rem; line-height: 1.35; }
@@ -289,10 +302,6 @@
 
   /* ============ Bigger screens ============ */
   @media (min-width: 760px) {
-    body { padding-bottom: 40px; }
-    #tabs { position: static; display: flex; gap: 4px; padding: 0; background: none; border: 0; box-shadow: none; }
-    #tabs button { flex-direction: row; gap: 8px; font-size: .92rem; padding: 8px 14px; }
-    #tabs svg { width: 18px; height: 18px; }
     main { padding: 28px 24px 24px; }
     h1 { font-size: 1.9rem; }
     .hero { padding: 28px; grid-template-columns: 1fr auto; }
@@ -309,6 +318,13 @@
     .jump { grid-column: 1 / -1; }
     .filters { margin: 0 0 6px; padding: 8px 0 10px; }
     .steps { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  }
+  /* Tabs move into the top bar once there is room for all five */
+  @media (min-width: 960px) {
+    body { padding-bottom: 40px; }
+    #tabs { position: static; display: flex; gap: 2px; padding: 0; background: none; border: 0; box-shadow: none; }
+    #tabs button { flex-direction: row; gap: 7px; font-size: .9rem; padding: 8px 12px; }
+    #tabs svg { width: 18px; height: 18px; }
     .toast { bottom: 24px; }
   }
   @media (min-width: 1000px) { .modules { grid-template-columns: repeat(3, 1fr); } }
@@ -338,6 +354,10 @@
       <button data-tab="speaking">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
         <span>Speaking</span>
+      </button>
+      <button data-tab="tips">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.8 10.6c.6.5.8 1.2.8 1.9V16h6v-.5c0-.7.3-1.4.8-1.9A6 6 0 0 0 12 3z"/></svg>
+        <span>Tips</span>
       </button>
       <button data-tab="about">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg>
@@ -379,6 +399,16 @@
       </div>
     </div>
 
+    <button class="totd" id="totd">
+      <span class="big">🎧</span>
+      <div>
+        <small>Tip of the day</small>
+        <b id="totdTitle"></b>
+        <p id="totdRule"></p>
+      </div>
+      <span class="m-arrow">›</span>
+    </button>
+
     <h2 class="section-title">Your skills</h2>
     <div class="modules">
       <button class="module" data-goto="english">
@@ -397,6 +427,12 @@
         <span class="m-icon">✏️</span>
         <span class="m-body"><b>Grammar Boost</b><small>Sentence structure, grammar &amp; questions</small>
           <span class="m-bar"><i data-bar="grammar"></i></span><small class="m-count" data-count="grammar"></small></span>
+        <span class="m-arrow">›</span>
+      </button>
+      <button class="module" data-goto="tips">
+        <span class="m-icon">💡</span>
+        <span class="m-body"><b>Tips &amp; Tricks</b><small>Communication tricks + pronunciation &amp; sound</small>
+          <span class="m-bar"><i data-bar="tips"></i></span><small class="m-count" data-count="tips"></small></span>
         <span class="m-arrow">›</span>
       </button>
       <button class="module" disabled>
@@ -421,6 +457,9 @@
   <!-- PUBLIC SPEAKING -->
   <section data-page="speaking" data-module="speaking"></section>
 
+  <!-- TIPS & TRICKS -->
+  <section data-page="tips" data-module="tips"></section>
+
   <!-- GUIDE -->
   <section data-page="about">
     <h1>How to use</h1>
@@ -431,6 +470,7 @@
       <li>Tap the <b>Gemini</b> button at the top-right of the card. The prompt is copied and Gemini opens.</li>
       <li>If Gemini's chat box is empty, paste (long-press → Paste, or Ctrl+V) and send.</li>
       <li>Use Gemini's microphone or Live mode to <b>speak</b> your answers.</li>
+      <li>Need a quick boost? Open <b>Tips</b> for communication tricks and pronunciation drills. For sound tips, use Gemini Live so Gemini can hear you.</li>
       <li>Come back and tap <b>Mark as done</b> to grow your streak 🔥.</li>
     </ol>
     <h2 class="section-title">The 100-day English plan</h2>
@@ -1162,6 +1202,216 @@ function buildEnglish100() {
 }
 const ENGLISH_100 = buildEnglish100();
 
+// ---------- Tips & Tricks: Communication & Sound ----------
+const TIPS = [
+  // ---------- Communication Tricks ----------
+  { t: "The 3-Second Pause", lv: "Communication Tricks",
+    g: "Pause and breathe instead of rushing or saying 'umm'.",
+    note: { rule: "2–3 seconds of silence sounds confident. Fillers sound nervous.",
+            ok: ["Good question… (pause) I'd say the main reason is…"],
+            bad: ["Umm… uhh… actually… basically… what to say…"] },
+    m: "Ask me 8 questions, from easy to tricky. Before each answer I must pause silently for 3 seconds, then answer in 2–3 sentences. Point out every filler word I use (umm, uh, actually, basically, like) and make me answer again without it.",
+    w: ["(pause)", "Good question.", "Let me think.", "Well,", "I'd say"] },
+  { t: "Buy Time Without 'Umm'", lv: "Communication Tricks",
+    g: "Use smart phrases to get thinking time.",
+    note: { rule: "Say a time-buying phrase — not a filler — while your brain prepares the answer.",
+            ok: ["That's an interesting question — let me think for a second.", "Hmm, how can I put this…"],
+            bad: ["Umm… umm… ya… one minute…"] },
+    m: "Ask me 8 surprising or difficult questions (e.g. 'What would you change about your city?'). I must start every answer with a different time-buying phrase, then answer properly.",
+    w: ["That's a good question.", "Let me think about that.", "How can I put this?", "Off the top of my head,", "Give me a second."] },
+  { t: "Answer in 3 Parts", lv: "Communication Tricks",
+    g: "Give clear answers: point, reason, example.",
+    note: { rule: "Point → Reason → Example → Point again. Clear, short and easy to follow.",
+            ok: ["I prefer mornings. I feel fresh. For example, I learn faster at 6 am. So mornings work best for me."],
+            bad: ["Mornings, evenings, both are… depends… sometimes I… I don't know."] },
+    m: "Ask me 6 opinion questions. For each, I answer using Point–Reason–Example–Point in under 45 seconds. Tell me if any part was missing.",
+    w: ["My point is", "because", "for example", "that's why", "so overall"] },
+  { t: "Keep It Short & Simple", lv: "Communication Tricks",
+    g: "Short sentences are easier to say and easier to understand.",
+    note: { rule: "One idea per sentence. Simple words. Long sentences = more mistakes.",
+            ok: ["I missed the bus. So I was late. I'm sorry."],
+            bad: ["Due to the reason that the bus which I usually take was not coming on time, so that's why I was getting late."] },
+    m: "Give me 5 long, complicated sentences in the style of Indian office English. I rewrite each one as 2–3 short, simple sentences. Then ask me 3 questions and remind me to keep every sentence short.",
+    w: ["One idea, one sentence.", "So,", "because", "but", "simple words"] },
+  { t: "Listen, Mirror & Paraphrase", lv: "Communication Tricks",
+    g: "Show you are really listening — people love it.",
+    note: { rule: "Repeat the key idea in your own words before you reply.",
+            ok: ["So what you're saying is the deadline is too tight?", "If I understand correctly, you need it by Friday."],
+            bad: ["Ok ok ok. (and then changing the topic)"] },
+    m: "Tell me 6 short problems or opinions, speaking as different people (a friend, a customer, my boss). For each one, I must first paraphrase what you said, then respond.",
+    w: ["So what you're saying is", "If I understand correctly", "You mean", "It sounds like", "Let me make sure I got that"] },
+  { t: "Keep Conversations Alive", lv: "Communication Tricks",
+    g: "Never let a conversation die — ask follow-up questions.",
+    note: { rule: "Answer + add one detail + ask a question back. Easy topics: Family, Occupation, Recreation, Dreams (FORD).",
+            ok: ["Yes, I love cricket! I play on Sundays. Do you play any sport?"],
+            bad: ["Yes.", "No.", "Ok."] },
+    m: "Have a small-talk chat with me. Give me short answers and say very little, so I must keep the conversation going with answer + detail + question, using the FORD topics. Tell me every time I give a 'dead' answer.",
+    w: ["What about you?", "How did you get into that?", "Tell me more.", "How was it?", "Really? Why?"] },
+  { t: "Polite Softeners", lv: "Communication Tricks",
+    g: "Ask and disagree politely without sounding rude.",
+    note: { rule: "Soften requests and opinions with could, would, maybe, I was wondering.",
+            ok: ["Could you send me the file, please?", "Maybe we could try another way?"],
+            bad: ["Send me the file.", "You are wrong."] },
+    m: "Give me 8 direct or rude-sounding sentences. I make each one polite using softeners. Then role-play 3 quick work situations where I must ask for something or disagree politely.",
+    w: ["Could you…?", "Would you mind…?", "I was wondering if…", "Maybe we could…", "I'm not sure that's right"] },
+  { t: "Sound Confident: Drop Weak Words", lv: "Communication Tricks",
+    g: "Remove words that make you sound unsure or over-apologetic.",
+    note: { rule: "Fewer 'sorry', 'just' and 'I think maybe'. Say it directly — and politely.",
+            ok: ["Do you have a minute?", "I have a question.", "I recommend option B."],
+            bad: ["Sorry to disturb, sorry, I just wanted to ask one small doubt…", "I think maybe probably option B?"] },
+    m: "Give me 8 weak, over-apologetic sentences. I rewrite each one to sound confident but still polite. Then role-play: I give a recommendation to my manager without any weak words.",
+    w: ["I recommend", "I'm confident that", "Do you have a minute?", "I have a question", "Here's my plan"] },
+  { t: "Rescue Phrases When You're Stuck", lv: "Communication Tricks",
+    g: "Keep going when you forget a word or make a mistake.",
+    note: { rule: "Don't stop or switch to Malayalam — rephrase, describe or correct yourself smoothly.",
+            ok: ["Sorry, I mean Tuesday.", "It's a kind of… tool for cutting wood.", "Let me put it another way."],
+            bad: ["(long silence)", "Ayyo, what is it called… leave it."] },
+    m: "Ask me questions that need difficult words (machines, feelings, Kerala food, processes). When I get stuck, coach me to use a rescue phrase and carry on. Keep count of how many times I recovered smoothly.",
+    w: ["What I mean is", "Let me put it another way", "It's a kind of", "Sorry, I mean", "How do you say…"] },
+  { t: "Fix Indian-English Habits", lv: "Communication Tricks",
+    g: "Replace common Indian-English phrases with global English.",
+    note: { rule: "These phrases confuse people from other countries. Use the simple global version.",
+            ok: ["I have a question.", "Please reply.", "Let's move the meeting earlier.", "Please do what's needed."],
+            bad: ["I have a doubt.", "Kindly revert back.", "Let's prepone the meeting.", "Do the needful."] },
+    m: "Quiz me on 12 common Indian-English phrases (I have a doubt, revert back, prepone, passed out from college, out of station, what is your good name, 'only' at the end of a sentence, and more). I give the global English version. Then ask me 4 questions and catch any of these habits.",
+    w: ["I have a question", "Please reply", "move it earlier", "I graduated from", "I'm out of town"] },
+  { t: "Start Stories With a Hook", lv: "Communication Tricks",
+    g: "Grab attention from the very first sentence.",
+    note: { rule: "Start in the middle of the action or with a question — not with long background.",
+            ok: ["The bus stopped in the middle of the forest — and the driver just walked away."],
+            bad: ["So, first of all, I will tell the background. In 2015, I was studying in…"] },
+    m: "Ask me to tell 3 short stories (a funny moment, a scary moment, a proud moment). Before each one, help me create a strong first line. Then I tell the story in 1 minute.",
+    w: ["Picture this:", "It was 2 am when", "I'll never forget", "Guess what happened", "Suddenly,"] },
+  { t: "Smile & Voice on Calls", lv: "Communication Tricks",
+    g: "Sound warm and confident on phone and video calls.",
+    note: { rule: "Smile while you speak — people can hear it. Sit up, slow down a little and use names.",
+            ok: ["Hi Priya, thanks for calling! How can I help?"],
+            bad: ["Ha, tell.", "Yes, what?"] },
+    m: "Role-play 4 short calls (a customer, an HR person, a relative, a delivery person). Coach me on a warm greeting, using names, a clear purpose and a friendly ending. Point out when I sound flat or too short.",
+    w: ["Hi …, thanks for calling", "How can I help?", "Just to confirm,", "Have a great day", "Speak to you soon"] },
+
+  // ---------- Sound & Pronunciation ----------
+  { t: "Word Stress", lv: "Sound & Pronunciation",
+    g: "Stress the right syllable — it changes how clear you sound.",
+    note: { rule: "Every English word has one STRONG syllable: say it longer, louder and higher.",
+            ok: ["PHO-to-graph · pho-TO-gra-phy", "de-VE-lop · ho-TEL · ca-REER"],
+            bad: ["DE-ve-lop", "HO-tel", "CA-reer"] },
+    m: "Give me 15 commonly mis-stressed words (develop, hotel, economy, comfortable, determine, career, technology, event, purchase, photograph, photography, success, interesting, vegetable, colleague). I say each one; correct my stress and make me repeat it. Then I use 5 of them in sentences.",
+    w: ["de-VE-lop", "ho-TEL", "ca-REER", "PUR-chase", "COL-league"] },
+  { t: "Sentence Stress & Rhythm", lv: "Sound & Pronunciation",
+    g: "Sound natural by stressing the important words.",
+    note: { rule: "Stress content words (nouns, verbs, adjectives). Say small words (to, a, the, of) quickly.",
+            ok: ["I WANT to GO to the MARket.", "She BOUGHT a NEW PHONE."],
+            bad: ["I. Want. To. Go. To. The. Market. (every word the same)"] },
+    m: "Give me 8 sentences with the stressed words in CAPITALS. I read each one aloud with the rhythm. Then give me sentences without capitals and I must decide which words to stress.",
+    w: ["content words = strong", "small words = quick", "da-DUM da-DUM", "pause at commas"] },
+  { t: "Intonation: Up or Down?", lv: "Sound & Pronunciation",
+    g: "Use the right tune for questions and statements.",
+    note: { rule: "Statements and Wh- questions go DOWN ↘. Yes/No questions go UP ↗.",
+            ok: ["Where do you live? ↘", "Do you live here? ↗", "I'm from Kochi. ↘"],
+            bad: ["I'm from Kochi? ↗ (sounds unsure)"] },
+    m: "Give me 10 sentences — statements, Wh- questions and yes/no questions. I say each one with the right tune and tell you whether it goes up or down. Then I practise sounding sure (falling tone) while giving my opinion.",
+    w: ["↘ statements", "↘ What / Where / Why", "↗ Do you / Are you / Can you", "lists: tea ↗, coffee ↗ or juice ↘"] },
+  { t: "Linking Words Together", lv: "Sound & Pronunciation",
+    g: "Connect words smoothly, like native speakers.",
+    note: { rule: "When a word ends in a consonant and the next one starts with a vowel, join them.",
+            ok: ["pick it up → pi-ki-tup", "an apple → a-napple", "turn it off → tur-ni-toff"],
+            bad: ["pick / it / up (robot style)"] },
+    m: "Give me 10 short phrases and sentences with linking (get up, look at it, an hour ago, put it on, not at all). Show me the linked version; I say it slowly, then fast. Then I read 3 full sentences with linking.",
+    w: ["get up → ge-tup", "not at all → no-ta-tall", "an hour → a-nour", "look at it → loo-ka-tit"] },
+  { t: "Weak Forms & Contractions", lv: "Sound & Pronunciation",
+    g: "Say small words the short way to sound relaxed and natural.",
+    note: { rule: "Use contractions in speech: I'm, don't, can't, I'll. 'to' sounds like 'tuh', 'and' like 'n'.",
+            ok: ["I'm not sure.", "I can't make it.", "fish 'n' chips", "I want tuh go."],
+            bad: ["I am not able to come.", "I do not know. (too stiff in a chat)"] },
+    m: "Give me 10 formal sentences. I say them the natural spoken way with contractions and weak forms. Then have a quick casual chat where I must use contractions.",
+    w: ["I'm", "don't / doesn't", "can't / won't", "I'd / I'll", "gonna / wanna (casual)"] },
+  { t: "V and W", lv: "Sound & Pronunciation",
+    g: "Say V and W clearly — a common challenge for Malayalam speakers.",
+    note: { rule: "V: top teeth touch the bottom lip and buzz. W: round your lips like 'oo' — no teeth.",
+            ok: ["very well · west · vine / wine · vest / west"],
+            bad: ["wery vell", "vest (when you mean west)"] },
+    m: "Give me minimal pairs (vine/wine, vest/west, vet/wet, veil/whale) and a tongue twister ('Very well, we will visit Vivek on Wednesday'). I say each one 3 times. Correct me and describe what my lips should do.",
+    w: ["very", "well", "village", "window", "Wednesday", "visit"] },
+  { t: "TH Sounds", lv: "Sound & Pronunciation",
+    g: "Say 'think' and 'this' — not 'tink' and 'dis'.",
+    note: { rule: "Put your tongue lightly between your teeth and blow air. think = no buzz, this = buzz.",
+            ok: ["think · three · thanks", "this · that · mother"],
+            bad: ["tink · tree (for three) · tanks", "dis · dat · mudder"] },
+    m: "Give me word pairs (three/tree, thank/tank, they/day, then/den) and sentences ('I think these three things are worth it'). I repeat each one. Correct me and make me exaggerate the tongue position at first.",
+    w: ["think", "three", "thanks", "this", "that", "together"] },
+  { t: "Short & Long Vowels", lv: "Sound & Pronunciation",
+    g: "Don't mix up ship / sheep, full / fool, live / leave.",
+    note: { rule: "Long vowels are held longer and are more tense. Short vowels are quick and relaxed.",
+            ok: ["ship (short) · sheep (long)", "full · fool", "live · leave", "sit · seat"],
+            bad: ["'I live at 6 pm' (when you mean leave)"] },
+    m: "Give me 10 minimal pairs. I say both words and you tell me if the difference was clear. Then you say sentences and I guess which word you used ('I want to leave / live here').",
+    w: ["ship / sheep", "full / fool", "live / leave", "pull / pool", "sit / seat"] },
+  { t: "-ed and -s Endings", lv: "Sound & Pronunciation",
+    g: "Pronounce endings correctly: walked, played, wanted, buses.",
+    note: { rule: "-ed = /t/ (walked), /d/ (played) or /id/ after t or d (wanted). -s = /s/, /z/ or /iz/ (buses).",
+            ok: ["walked = walkt", "played = playd", "wanted = wan-tid", "buses = bus-iz"],
+            bad: ["walk-ed (two syllables)", "play-ed"] },
+    m: "Give me 15 past-tense verbs and plurals, mixed. I say each one; tell me if I used /t/, /d/ or /id/ (or /s/, /z/, /iz/) correctly. Then I tell you about my yesterday in the past tense with clear endings.",
+    w: ["worked /t/", "called /d/", "decided /id/", "dogs /z/", "boxes /iz/"] },
+  { t: "Tricky Words & Silent Letters", lv: "Sound & Pronunciation",
+    g: "Say commonly mispronounced words correctly.",
+    note: { rule: "Many English words aren't said the way they are spelled. Learn them by sound.",
+            ok: ["Wednesday = WENZ-day", "comfortable = KUMF-ter-bul", "vegetable = VEJ-ta-bul", "receipt = ri-SEET"],
+            bad: ["Wed-nes-day", "com-for-TA-ble", "re-SEPT"] },
+    m: "Quiz me on 15 tricky words (Wednesday, comfortable, vegetable, receipt, island, salmon, debt, subtle, genre, suite, chaos, queue, colonel, mortgage, determine). I say each one; correct me with simple respelling and make me repeat it 3 times.",
+    w: ["WENZ-day", "KUMF-ter-bul", "VEJ-ta-bul", "ri-SEET", "KYOO (queue)"] },
+  { t: "Malayalam Sound Habits", lv: "Sound & Pronunciation",
+    g: "Fix extra sounds that come from your mother tongue.",
+    note: { rule: "Don't add extra sounds: no 'y' before e-, no 'w' before o-, no 'u' at the end of words.",
+            ok: ["end · egg · eleven", "open · only · old", "bus · school · lunch"],
+            bad: ["yend · yegg · yeleven", "wopen · wonly", "bus-u · school-u"] },
+    m: "Give me 15 words that start with e or o, or end in a consonant (end, egg, every, eleven, open, only, old, office, bus, lunch, bag, book, ticket, fresh, project). I say each one; catch any extra y, w or u sounds. Then I read 3 sentences full of them.",
+    w: ["end", "every", "open", "only", "bus", "school"] },
+  { t: "Speak Clearly: Pace & Pauses", lv: "Sound & Pronunciation",
+    g: "Be understood the first time.",
+    note: { rule: "Slow down a little, open your mouth, finish word endings and pause between ideas.",
+            ok: ["My name is Anu. / I work in Kochi. / I'm a designer."],
+            bad: ["mynameisAnuIworkinKochiI'madesigner (too fast, no pauses)"] },
+    m: "Give me a 6-sentence paragraph. I read it fast first, then slowly with pauses. Then I speak for 1 minute about my day at a calm pace. Tell me where I rushed, dropped endings or spoke too softly.",
+    w: ["slow down 20%", "pause between ideas", "open your mouth", "finish the endings", "louder on key words"] }
+];
+
+function buildTipsPrompt(d, n) {
+  const sound = d.lv === "Sound & Pronunciation";
+  const note = [d.note.rule, ...d.note.ok.map(x => "Do: " + x), ...(d.note.bad || []).map(x => "Avoid: " + x)].join("\n");
+  const rules = sound ? [
+    "I am speaking to you with my voice (microphone / Gemini Live). Listen carefully and tell me exactly which sound or stress was wrong.",
+    'Show pronunciation with simple respelling and CAPITALS for stress (e.g. "de-VE-lop", "WENZ-day"), not only phonetic symbols.',
+    "Make me repeat difficult words 3 times: slowly first, then at normal speed."
+  ] : [
+    'After each answer, show me a better version that uses the trick: "Better: ...".',
+    "Point out when I fall back into old habits (fillers, long confusing sentences, translating from Malayalam)."
+  ];
+  return `You are my friendly communication and pronunciation coach. I am a Malayalam speaker improving my spoken English.
+
+Today's tip (Tip ${n} · ${d.lv}): ${d.t}
+Goal: ${d.g}
+
+The tip in short:
+${note}
+
+Run a 10-minute session in this structure:
+1. Learn the trick (2 min): explain this tip in very simple English with 2 more examples${sound ? ", and tell me exactly what to do with my mouth, lips or tongue" : ""}.
+2. Practice (6 min): ${d.m}
+3. Feedback (2 min): tell me how well I used the trick.
+
+Try these: ${d.w.join(" | ")}.
+
+Rules:
+- Give me ONE task at a time and wait for my answer.
+- Keep your replies short so that I practise more than you talk.
+${rules.map(r => "- " + r).join("\n")}
+- At the end give me: a score out of 10 for how well I used today's trick, the 3 things to keep practising, and 1 two-minute drill I can repeat on my own every day this week.
+
+Start now with the short explanation.`;
+}
+
 const MODULES = {
   english: {
     title: "English Communication — 100-Day Program",
@@ -1204,6 +1454,22 @@ const MODULES = {
     storeKey: "cc-grammar-done",
     days: GRAMMAR_DAYS,
     prompt: buildGrammarPrompt
+  },
+  tips: {
+    title: "Tips & Tricks: Communication & Sound",
+    icon: "💡",
+    lead: "Quick tricks that make you sound clearer, more natural and more confident. Read the tip, then practise it with Gemini for 10 minutes — for the sound tips, turn on the microphone or Gemini Live so it can hear you.",
+    levels: ["Communication Tricks", "Sound & Pronunciation"],
+    ranges: ["1–12", "13–24"],
+    allLabel: "All tips",
+    prefix: "Tip",
+    noteLabel: "💡 The trick:",
+    firstStep: "Learn the trick · 2 min",
+    mainStep: "Practice · 6 min",
+    wordsLabel: "Try these",
+    storeKey: "cc-tips-done",
+    days: TIPS,
+    prompt: buildTipsPrompt
   }
 };
 
@@ -1360,7 +1626,7 @@ function dayCard(mod, d, n) {
       </div>
       <p class="goal">${esc(d.g)}</p>
       ${d.note ? `<div class="note">
-        <p><b>📝 Quick note:</b> ${esc(d.note.rule)}</p>
+        <p><b>${mod.noteLabel || "📝 Quick note:"}</b> ${esc(d.note.rule)}</p>
         <ul>${d.note.ok.map(x => `<li class="ok">✔ ${esc(x)}</li>`).join("")}${(d.note.bad || []).map(x => `<li class="bad">✘ ${esc(x)}</li>`).join("")}</ul>
       </div>` : ""}
       ${d.tip ? `<p class="tip">💡 ${esc(d.tip)}</p>` : ""}
@@ -1396,10 +1662,12 @@ function nextDay(mod) {
 }
 
 function goToNext(key) {
-  const mod = MODULES[key];
+  const n = nextDay(MODULES[key]);
+  if (n) flashCard(key, n);
+}
+
+function flashCard(key, n) {
   const sec = document.querySelector(`[data-module="${key}"]`);
-  const n = nextDay(mod);
-  if (!n) return;
   sec.querySelector('.filters [data-level="all"]').click();
   const card = sec.querySelector(`.card[data-n="${n}"]`);
   card.scrollIntoView({ block: "start" });
@@ -1470,6 +1738,10 @@ function renderHome() {
   const start = new Date(new Date().getFullYear(), 0, 0);
   const dayOfYear = Math.floor((new Date() - start) / 86400000);
   document.getElementById("wotd").textContent = `“${ALL_PHRASES[dayOfYear % ALL_PHRASES.length]}”`;
+  const tipIdx = dayOfYear % TIPS.length;
+  document.getElementById("totdTitle").textContent = TIPS[tipIdx].t;
+  document.getElementById("totdRule").textContent = TIPS[tipIdx].note.rule;
+  document.getElementById("totd").dataset.n = tipIdx + 1;
 
   Object.entries(MODULES).forEach(([key, m]) => {
     const bar = document.querySelector(`[data-bar="${key}"]`);
@@ -1534,6 +1806,10 @@ document.getElementById("tabs").addEventListener("click", e => {
 document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () =>
   openTab(b.dataset.goto, b.dataset.jump && (() => document.getElementById(b.dataset.jump).scrollIntoView()))));
 document.getElementById("heroCta").addEventListener("click", () => openTab("english", () => goToNext("english")));
+document.getElementById("totd").addEventListener("click", e => {
+  const n = +e.currentTarget.dataset.n;
+  openTab("tips", () => flashCard("tips", n));
+});
 window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
 
 Object.keys(MODULES).forEach(renderModule);
