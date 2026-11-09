@@ -12,7 +12,9 @@ Live: https://amjad-ra.github.io/communication-coach/
   - **Phase 2 · Lock It In (Days 31–100)** – 10 themed weeks to make it accurate and permanent. Each week: 5 new topics → 🔧 Fix-It day (repeated mistakes + a grammar note) → 🔁 Review day (reuses the week's words and revisits three Phase 1 topics). Week 10 ends with a final test (Day 99) and a lifelong practice plan (Day 100).
   - A **Start / Continue** button jumps to your next unfinished day.
   - **Grammar Boost** (below the 100 days) – 16 sessions on sentence structure, grammar and questions, each with a short note: the rule plus ✔ correct / ✘ wrong examples.
-- **Public Speaking** – 30 daily 10-minute drills (Foundations 1–10, Building 11–20, Mastery 21–30): stage fear, voice, structure, storytelling, Q&A, presentations, pitches and debates.
+- **Public Speaking – 100-Day Program** (10 minutes a day):
+  - **Phase 1 · Fast Track (Days 1–30)** – stage fear, voice, structure, storytelling, event speeches and a big speech (Foundations 1–10, Building 11–20, Mastery 21–30).
+  - **Phase 2 · Lock It In (Days 31–100)** – 10 themed weeks (daily speaking habit, voice mastery, structure, storytelling, persuasion, real-world occasions, work presentations, thinking on your feet, stage presence). Each week: 5 new skills → 🔧 Fix-It day (a speaking habit, linked to a Tip) → 🔁 Review day (redo three Phase 1 sessions). Week 10 builds a 5-minute signature talk, ends with a final speaking test (Day 99) and a speaker-for-life plan (Day 100).
 - **Tips & Tricks** – 24 quick 10-minute sessions, each with a short "trick" note (✔ do / ✘ avoid):
   - **Communication Tricks (1–12)** – the 3-second pause, buying time without "umm", answering in 3 parts, short sentences, paraphrasing, keeping conversations alive, polite softeners, dropping weak words, rescue phrases, fixing Indian-English habits, story hooks, warm phone voice.
   - **Sound & Pronunciation (13–24)** – word stress, sentence rhythm, intonation, linking, weak forms, V/W, TH, short vs long vowels, -ed/-s endings, tricky words, Malayalam sound habits (extra y/w/u), pace and clarity. Best practised with Gemini Live so Gemini can hear you.
@@ -20,4 +22,4 @@ Live: https://amjad-ra.github.io/communication-coach/
 - **Gemini button** (right side of each card) – copies the day's prompt and opens Gemini with it. If Gemini's chat box is empty, just paste and send.
 - **Mark as done** – progress is saved in your browser.
 
-To add or edit days, change `ENGLISH_DAYS` (Phase 1), `LOCK_WEEKS` / `MASTERY_WEEK` (Phase 2), `GRAMMAR_DAYS`, `TIPS` or `SPEAKING_DAYS` in `index.html`.
+To add or edit days, change `ENGLISH_DAYS` (Phase 1), `LOCK_WEEKS` / `MASTERY_WEEK` (Phase 2), `SPEAKING_DAYS` / `SPEAK_WEEKS` / `SPEAK_MASTERY` (speaking), `GRAMMAR_DAYS` or `TIPS` in `index.html`.

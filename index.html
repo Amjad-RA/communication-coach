@@ -112,7 +112,13 @@
     padding: 14px 18px; border-radius: 14px; box-shadow: 0 6px 16px rgba(19, 122, 63, .3);
     transition: transform .15s;
   }
-  .cta:active, .resume:active, .btn:active, .module:active { transform: scale(.98); }
+  .cta2 {
+    grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer; text-align: left;
+    border: 1px solid #a9e2bd; background: rgba(255, 255, 255, .85); color: var(--green-strong);
+    font-size: .9rem; font-weight: 800; padding: 11px 14px; border-radius: 14px;
+  }
+  .cta2 b { font-size: 1.3rem; line-height: 1; }
+  .cta:active, .cta2:active, .resume:active, .btn:active, .module:active { transform: scale(.98); }
 
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
   .stat { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 12px 8px; text-align: center; box-shadow: var(--shadow); }
@@ -330,6 +336,7 @@
     .ring { width: 130px; height: 130px; }
     .ring-label b { font-size: 2.1rem; }
     .cta { grid-column: 1; justify-self: start; padding: 14px 28px; }
+    .cta2 { grid-column: 1; justify-self: start; min-width: 360px; }
     .modules { grid-template-columns: 1fr 1fr; gap: 14px; }
     .cheat { padding: 16px; }
     .seg { max-width: 420px; }
@@ -407,6 +414,7 @@
         <div class="ring-label"><small>Day</small><b id="ringDay">1</b><small>of 100</small></div>
       </div>
       <button class="cta" id="heroCta">▶ Start today's session</button>
+      <button class="cta2" id="heroCta2"></button>
     </div>
 
     <div class="stats">
@@ -457,7 +465,7 @@
       </button>
       <button class="module" data-goto="speaking">
         <span class="m-icon">🎤</span>
-        <span class="m-body"><b>Public Speaking</b><small>Stage fear, structure, stories, pitches</small>
+        <span class="m-body"><b>Public Speaking</b><small>100 days: stage confidence → natural, polished speaker</small>
           <span class="m-bar"><i data-bar="speaking"></i></span><small class="m-count" data-count="speaking"></small></span>
         <span class="m-arrow">›</span>
       </button>
@@ -517,6 +525,13 @@
       <li><b>🔒 Phase 2 · Lock It In · Days 31–100</b><br>10 themed weeks to make your English accurate, natural and permanent.</li>
       <li><b>Every Phase 2 week</b><br>5 new topics → 🔧 Fix-It day (your repeated mistakes) → 🔁 Review day (revisits earlier topics).</li>
       <li><b>🎓 Day 99 &amp; 100</b><br>A final speaking test with a level estimate, then your English-for-life routine.</li>
+    </ol>
+    <h2 class="section-title">The 100-day speaking plan</h2>
+    <ol class="steps">
+      <li><b>🚀 Phase 1 · Fast Track · Days 1–30</b><br>Get up and speak with confidence: stage fear, voice, structure, stories and your first big speech.</li>
+      <li><b>🔒 Phase 2 · Lock It In · Days 31–100</b><br>10 weeks: daily habit, voice, structure, storytelling, persuasion, occasions, work talks, thinking on your feet and stage presence.</li>
+      <li><b>Every Phase 2 week</b><br>5 new skills → 🔧 Fix-It day (your speaking habits) → 🔁 Review day (redo early sessions).</li>
+      <li><b>🎓 Days 94–100</b><br>Build and deliver your 5-minute signature talk, a final speaking test and your speaker-for-life plan.</li>
     </ol>
     <h2 class="section-title">The 10-minute plan</h2>
     <ol class="steps">
@@ -784,9 +799,9 @@ const SPEAKING_DAYS = [
     g: "Design a talk built around one powerful idea.",
     m: "Help me find one 'idea worth sharing' from my life or work. Build a 5-minute talk outline: hook, story, idea, evidence, call to action. Let me deliver the opening 1 minute and give feedback.",
     w: ["here's an idea", "what I discovered", "it changed the way I", "the research shows", "what if", "my invitation to you"] },
-  { t: "Final Speech & Review", lv: "Mastery",
-    g: "Deliver your best speech and review your 30-day journey.",
-    m: "Ask me to deliver a 3-minute speech on 'How I became a more confident speaker' using everything I've learned (structure, story, pauses, opening, closing). Give a full evaluation and a plan for the next 30 days.",
+  { t: "Big Speech & Confidence Check", lv: "Mastery",
+    g: "Deliver your best speech so far and check how far you've come in 30 days.",
+    m: "Ask me to deliver a 3-minute speech on 'How I became a more confident speaker' using everything I've learned (structure, story, pauses, opening, closing). Give a full evaluation and tell me the 3 things to focus on in Phase 2 (Days 31–100).",
     w: ["when I started", "the biggest change", "I learned that", "my next goal", "thank you for", "the journey continues"] }
 ];
 
@@ -1450,6 +1465,309 @@ ${rules.map(r => "- " + r).join("\n")}
 Start now with the short explanation.`;
 }
 
+// ---------- Public Speaking Phase 2: Lock It In (Days 31–100) ----------
+// Weeks 1–9: 5 new skills → 🔧 Fix-It day (a speaking habit, linked to a Tip) → 🔁 Review day.
+// `fix` is the Tips & Tricks number used on that week's Fix-It day.
+const SPEAK_WEEKS = [
+  { theme: "Daily Speaking Habit", fix: 1,
+    about: "Make speaking out loud a daily habit — short talks on anything, anytime.",
+    days: [
+      { t: "The 60-Second Daily Talk",
+        g: "Speak for one full minute on any everyday topic.",
+        m: "Give me 4 everyday topics one at a time (my street, my phone, rain, my favourite snack). For each, I get 10 seconds to think and then speak for exactly 60 seconds. Ask me to record myself on my phone for the last one and tell you what I noticed when I played it back.",
+        w: ["today I want to talk about", "the reason is", "for example", "that's why", "to sum up"] },
+      { t: "Tell Your Morning Like a Story",
+        g: "Turn an ordinary moment into an interesting short talk.",
+        m: "Ask me to describe this morning as a 90-second story: a hook, small details, one problem or surprise, and an ending. Then ask me to tell it again with more energy and better pauses.",
+        w: ["it started when", "out of nowhere", "I had no idea", "just then", "in the end"] },
+      { t: "Opinion in 90 Seconds",
+        g: "Give a clear, structured opinion on the spot.",
+        m: "Give me 3 debatable statements one at a time (e.g. 'Exams should be banned'). For each, I give a 90-second opinion using Point – Reason – Example – Point. Score my structure out of 5 each time.",
+        w: ["I strongly believe", "here's why", "take for example", "some may say… but", "so my answer is"] },
+      { t: "Talk About Any Object",
+        g: "Speak creatively about something simple — great for impromptu skills.",
+        m: "Ask me to pick an object near me (a pen, a cup, a chair). I speak about it for 1 minute: what it is, a memory linked to it, and a lesson it teaches. Do 3 objects.",
+        w: ["this simple", "it reminds me of", "most people don't notice", "in a way", "the lesson here is"] },
+      { t: "Camera & Mirror Practice",
+        g: "Get used to seeing yourself speak — and fix what you see.",
+        m: "Ask me to give a 1-minute talk on 'My dream job' to my phone camera or a mirror. Then ask me 5 questions about what I saw (eye contact, smile, hands, posture, face). Coach me on one change and let me record it again.",
+        w: ["look into the lens", "smile", "open hands", "stand tall", "slow down"] }
+    ] },
+  { theme: "Voice Mastery", fix: 24,
+    about: "Make your voice strong, clear, warm and interesting to listen to.",
+    days: [
+      { t: "Breathing & Projection",
+        g: "Speak from your belly so your voice fills the room without shouting.",
+        m: "Teach me a 1-minute belly-breathing exercise. Then give me 3 short lines to say as if speaking to the back row of a hall, without shouting. Ask me to describe how my voice felt and coach me.",
+        w: ["deep breath", "from the belly", "to the back row", "steady", "strong, not loud"] },
+      { t: "Pitch & Melody (No Monotone)",
+        g: "Move your voice up and down so people stay interested.",
+        m: "Give me a short paragraph and ask me to read it twice: once flat, once with melody (rising for curiosity, falling for certainty). Then I give a 1-minute talk about my favourite festival with lots of vocal variety.",
+        w: ["rise ↗", "fall ↘", "curious", "certain", "excited"] },
+      { t: "Power Pauses",
+        g: "Use silence to make your key points land.",
+        m: "Give me 5 powerful lines (e.g. 'And that… changed everything.'). I practise pausing before and after the key words. Then I give a 1-minute talk where I must use at least 3 deliberate pauses.",
+        w: ["(pause)", "and that…", "here's the thing…", "think about it…", "that's when…"] },
+      { t: "Speed Control",
+        g: "Slow down for important parts, speed up for action.",
+        m: "Give me a short story with a calm part and an exciting part. I tell it slowly where it matters and faster in the action. Then tell me where I rushed and let me try again.",
+        w: ["slowly…", "and suddenly", "quickly", "then everything stopped", "let that sink in"] },
+      { t: "Emotion in Your Voice",
+        g: "Express feelings through your voice, not just your words.",
+        m: "Give me one sentence (e.g. 'I can't believe it happened') and ask me to say it with 5 different emotions: happy, shocked, sad, angry, proud. Then I tell a 1-minute story that moves through at least 2 emotions.",
+        w: ["joy", "shock", "sadness", "frustration", "pride"] }
+    ] },
+  { theme: "Structure Like a Pro", fix: 3,
+    about: "Organise any talk so it's easy to follow and easy to remember.",
+    days: [
+      { t: "The Rule of Three",
+        g: "Group ideas in threes — the most memorable pattern in speaking.",
+        m: "Give me 3 topics. For each, I build a 1-minute talk around exactly three points ('three reasons', 'three lessons', 'three tips') and deliver it. Check that each point was clear and different.",
+        w: ["there are three reasons", "first", "second", "third", "and most importantly"] },
+      { t: "Past – Present – Future",
+        g: "Use a simple time structure for any story or update.",
+        m: "Ask me to give 1-minute talks using Past → Present → Future on: my English journey, my town, and my career. Point out where I mixed up the order.",
+        w: ["a few years ago", "today", "right now", "in the future", "my goal is"] },
+      { t: "Problem – Solution – Benefit",
+        g: "Structure talks that solve problems and convince people.",
+        m: "Give me 3 everyday problems (traffic, too much phone use, plastic waste). For each, I give a 90-second talk: the problem, my solution, and the benefit. Challenge my weakest part.",
+        w: ["the problem is", "here's what we can do", "the solution is simple", "as a result", "imagine if"] },
+      { t: "Signposting",
+        g: "Guide your listeners with clear 'road signs'.",
+        m: "Ask me to give a 2-minute talk on 'How to prepare for an exam' with clear signposts between every part. Count my signposts and point out where listeners could get lost.",
+        w: ["let me start with", "moving on to", "this brings me to", "on the other hand", "finally"] },
+      { t: "One Big Idea",
+        g: "Know your main message — and say it in one sentence.",
+        m: "Give me 4 topics. For each, I must say my 'one big idea' in a single sentence of under 15 words, then build a 1-minute talk that keeps coming back to it.",
+        w: ["my message is simple", "if you remember one thing", "it all comes down to", "again", "that's the key"] }
+    ] },
+  { theme: "Storytelling Power", fix: 11,
+    about: "Tell stories that people feel, remember and repeat.",
+    days: [
+      { t: "The Mini Hero's Journey",
+        g: "Tell a story with a challenge, a struggle and a change.",
+        m: "Ask me to tell a 2-minute true story about a challenge I faced: the normal life, the problem, the struggle, the turning point and how I changed. Help me make the turning point stronger.",
+        w: ["life was normal until", "the hardest part was", "I almost gave up", "that's when", "I became"] },
+      { t: "Dialogue in Stories",
+        g: "Bring stories alive with real conversations.",
+        m: "Ask me to tell a 1-minute story about a funny or tense conversation I had, using direct speech ('And he said…'). Then ask me to retell it with different voices for each person.",
+        w: ["and he said", "she looked at me and said", "I replied", "can you believe", "there was silence"] },
+      { t: "Sensory Details",
+        g: "Make listeners see, hear and smell your story.",
+        m: "Ask me to describe a memorable place (a market, a festival, my grandmother's kitchen) for 1 minute using all five senses. Push me for more specific details each time.",
+        w: ["I could hear", "the smell of", "it looked like", "it felt", "the taste of"] },
+      { t: "Funny Story Timing",
+        g: "Use setup, pause and punchline to make people laugh.",
+        m: "Teach me setup → pause → punchline. Ask me to tell 2 short funny real-life stories and coach my timing, especially the pause before the punchline.",
+        w: ["so there I was", "and of course", "(pause)", "you won't believe", "the funny part is"] },
+      { t: "Story With a Message",
+        g: "End every story with a clear lesson.",
+        m: "Ask me to tell 2 short stories (1 minute each) and finish each with a one-line lesson that connects to the audience ('And that's why you should…').",
+        w: ["that day taught me", "the lesson is", "and that's why", "so next time you", "remember"] }
+    ] },
+  { theme: "Persuasion & Influence", fix: 8,
+    about: "Move people to agree, decide and act.",
+    days: [
+      { t: "Know Your Audience",
+        g: "Change your message for different listeners.",
+        m: "Give me one idea (e.g. 'Learn a new skill every year'). I present it in 1 minute three times: to students, to busy parents and to managers. Tell me how well I adapted.",
+        w: ["for people like you", "you might be thinking", "what's in it for you", "I know you're busy", "this matters because"] },
+      { t: "Logic, Emotion & Trust",
+        g: "Persuade with facts, feelings and credibility.",
+        m: "Explain logic, emotion and trust in 3 simple lines. Then I give a 2-minute talk persuading people to exercise daily, using at least one fact, one emotional story and one reason to trust me.",
+        w: ["the facts show", "imagine how you'd feel", "from my own experience", "studies suggest", "trust me on this"] },
+      { t: "Handling Objections",
+        g: "Answer 'yes, but…' calmly and convincingly.",
+        m: "I pitch an idea in 1 minute. Then you raise 5 objections one by one (cost, time, risk, 'it won't work', 'we tried before'). I answer each calmly using acknowledge → answer → return to benefit.",
+        w: ["that's a fair concern", "here's the thing", "actually", "the real cost is", "which is why"] },
+      { t: "Powerful Calls to Action",
+        g: "End with a clear request that people actually follow.",
+        m: "Ask me to write and deliver 5 different calls to action for different talks (donate, sign up, change a habit, approve a budget, vote). Make each one specific, simple and urgent.",
+        w: ["starting today", "all I ask is", "take one minute to", "here's your next step", "let's do this together"] },
+      { t: "The 2-Minute Persuasive Speech",
+        g: "Put it all together in one convincing speech.",
+        m: "Ask me to choose a cause I care about and give a 2-minute persuasive speech: hook, problem, solution, proof, call to action. Then act as a sceptical audience and score each part.",
+        w: ["picture this", "the problem is real", "here's the solution", "the proof", "so I'm asking you"] }
+    ] },
+  { theme: "Real-World Occasions", fix: 15,
+    about: "Be ready when someone suddenly says, 'Can you say a few words?'",
+    days: [
+      { t: "Wedding or Birthday Toast",
+        g: "Give a warm, short and memorable toast.",
+        m: "Help me prepare a 1-minute toast for a friend's wedding or birthday: a warm opening, one short story about the person, a wish and 'please raise your glasses'. Then I deliver it twice.",
+        w: ["for those who don't know me", "I've known … for", "one thing I love about", "I wish you", "please raise your glasses"] },
+      { t: "Farewell Speech for a Colleague",
+        g: "Say goodbye with gratitude, humour and good wishes.",
+        m: "Role-play an office farewell. Help me give a 90-second farewell speech for a colleague (or for myself leaving), with a memory, thanks and good wishes.",
+        w: ["it's hard to say goodbye", "I'll always remember", "thank you for", "you'll be missed", "all the best"] },
+      { t: "Chief Guest at a School Function",
+        g: "Speak to students with energy and a simple message.",
+        m: "I am the chief guest at a school or college function. Help me give a 2-minute talk to students with a story from my life and one clear piece of advice. Act as the audience and tell me if I kept their attention.",
+        w: ["dear students", "when I was your age", "my one piece of advice", "never stop", "the future is yours"] },
+      { t: "Award Acceptance",
+        g: "Accept recognition gracefully and thank people well.",
+        m: "Role-play: I receive an award at work. Help me give a 1-minute acceptance speech: humble opening, specific thanks, what it means to me, and a forward-looking close.",
+        w: ["I'm truly honoured", "this belongs to the whole team", "special thanks to", "this means a lot", "I'll keep working to"] },
+      { t: "Introduce Your Company or Team",
+        g: "Present your organisation clearly and proudly.",
+        m: "Ask me to give a 90-second introduction of my company, team or college to visitors: who we are, what we do, what makes us special and an invitation to connect.",
+        w: ["we are", "what we do is", "what makes us different", "we're proud of", "we'd love to work with you"] }
+    ] },
+  { theme: "Work Presentations", fix: 4,
+    about: "Present at work clearly, briefly and with confidence.",
+    days: [
+      { t: "Presenting Data & Numbers",
+        g: "Make numbers meaningful and memorable.",
+        m: "Give me a small set of numbers (sales, users or survey results). I present them in 90 seconds: the headline, what it means, and the action. Coach me to round numbers and use comparisons.",
+        w: ["the key number is", "that's almost double", "in other words", "this tells us", "so we should"] },
+      { t: "Bottom Line First",
+        g: "Give leaders the answer first, then the details.",
+        m: "Role-play: you are a senior leader with only 1 minute. I give 3 different updates, starting each with the bottom line, then 2 supporting points, then the ask. Interrupt me if I start with background.",
+        w: ["the bottom line is", "in short", "two reasons", "what I need from you is", "happy to share details"] },
+      { t: "Product or Process Demo",
+        g: "Walk people through something step by step.",
+        m: "Ask me to demo an app, a tool or a process I use in 2 minutes as if sharing my screen. Act as a confused user who asks 3 questions.",
+        w: ["let me show you", "as you can see", "next, click", "the best part is", "any questions so far?"] },
+      { t: "Training Your Team",
+        g: "Teach a skill so others can actually do it.",
+        m: "Ask me to teach a short skill to a new team member in 2 minutes using explain → show → let them try → check. Act as the learner and make one mistake I must correct kindly.",
+        w: ["the goal today is", "watch how I", "now you try", "almost — just", "great job"] },
+      { t: "Presenting Bad News",
+        g: "Share problems honestly, calmly and with a plan.",
+        m: "Role-play: I must tell my team or a client about a delay or a failure. I present it in 90 seconds: what happened, the impact, what we're doing and what's next. React realistically.",
+        w: ["I want to be upfront", "unfortunately", "the impact is", "here's our plan", "I'll keep you updated"] }
+    ] },
+  { theme: "Think on Your Feet", fix: 9,
+    about: "Speak well even when you have zero time to prepare.",
+    days: [
+      { t: "Table Topics Challenge",
+        g: "Answer surprise questions with a mini speech.",
+        m: "Give me 5 surprise 'table topics' questions one at a time. I have 5 seconds to think and 1 minute to answer each with an opening, one point with an example, and a closing.",
+        w: ["what a question", "let me share", "I remember", "the point is", "and that's my answer"] },
+      { t: "Bridging",
+        g: "Connect any question to the message you want to share.",
+        m: "Tell me my key message (e.g. 'Practice beats talent'). Ask me 6 unrelated questions; I answer each briefly and then bridge back to my message.",
+        w: ["that's a great point, and", "what's really important is", "that reminds me", "it all connects to", "which brings me back to"] },
+      { t: "When Your Mind Goes Blank",
+        g: "Recover smoothly when you forget what to say.",
+        m: "Make me give a 2-minute talk, but interrupt me twice and say 'You forgot your next point!'. Coach me to recover by summarising, asking the audience a question or moving to my closing.",
+        w: ["so far we've seen", "let me ask you", "what does this mean for you", "the most important thing is", "to bring it together"] },
+      { t: "Hot Seat: Media Interview",
+        g: "Stay calm and clear under tough questions.",
+        m: "Act as a TV reporter interviewing me about a local issue or my business. Ask fast and tricky questions. Coach me to keep answers short, calm and on-message.",
+        w: ["what I can tell you is", "let me be clear", "the real issue is", "we're focused on", "thank you for the question"] },
+      { t: "Speaking Without Preparation",
+        g: "Give a full 2-minute talk with only 30 seconds to plan.",
+        m: "Give me a random topic. I get 30 seconds to plan (opening, three points, closing) and then speak for 2 minutes. Repeat with a second topic and compare the two attempts.",
+        w: ["let me start with a question", "three things", "here's an example", "what this means", "my final thought"] }
+    ] },
+  { theme: "Stage Presence", fix: 14,
+    about: "Own the room with your body, your eyes and your energy.",
+    days: [
+      { t: "Using the Stage",
+        g: "Move with purpose, not nerves.",
+        m: "Teach me simple stage movement (stand still for key points, walk between sections, never pace). Then I give a 2-minute talk and describe where I stood and moved, so you can coach me.",
+        w: ["plant your feet", "move between points", "come forward for the key idea", "stand still", "own the space"] },
+      { t: "Gestures That Match Words",
+        g: "Use your hands to show — not to fidget.",
+        m: "Give me 8 phrases ('three reasons', 'a huge problem', 'step by step', 'all of us'). I say each one with a matching gesture and describe it. Then I give a 1-minute talk using natural gestures.",
+        w: ["open palms", "show numbers", "big and small", "point to the future", "hands relaxed"] },
+      { t: "Connecting With the Audience",
+        g: "Make the audience feel part of your talk.",
+        m: "Teach me 5 ways to involve an audience (questions, show of hands, 'imagine…', using 'you', eye contact with sections). Then I give a 2-minute talk using at least 3 of them.",
+        w: ["raise your hand if", "how many of you", "imagine you", "you might be thinking", "let's try this together"] },
+      { t: "Speaking With Slides",
+        g: "Use slides to support you — never read from them.",
+        m: "Ask me to plan 4 slides for a 2-minute talk (one idea and one image or number per slide). I present it without reading, explaining each slide in my own words. Interrupt me if I start 'reading'.",
+        w: ["this slide shows", "notice", "the big takeaway", "let's move on", "back to you"] },
+      { t: "Your Pre-Speech Routine",
+        g: "Calm your nerves and start strong every time.",
+        m: "Help me build a 5-minute pre-speech routine (breathing, power pose, voice warm-up, first-line rehearsal). Then I practise it and deliver a strong 30-second opening three times.",
+        w: ["breathe in for 4", "shoulders back", "warm up my voice", "first line ready", "smile and begin"] }
+    ] }
+];
+
+// Week 10 (Days 94–100): build and deliver your signature talk.
+const SPEAK_MASTERY = {
+  theme: "Speaker for Life",
+  about: "Build your signature talk, face the toughest Q&A and graduate as a confident speaker.",
+  days: [
+    { t: "Plan Your Signature Talk",
+      g: "Choose your one big message and plan a 5-minute talk around it.",
+      m: "Help me choose a topic and one big idea for a 5-minute 'signature talk' I could give anywhere. Build the outline with me: hook, 3 points with stories or examples, and a call to action. Then I explain the outline aloud in 1 minute.",
+      w: ["my big idea is", "the hook", "three points", "the story", "the call to action"] },
+    { t: "Draft & Rehearse the Opening and Closing",
+      g: "Make the first and last 30 seconds unforgettable.",
+      m: "Help me write 3 versions of my opening and 2 versions of my closing for my signature talk. I deliver each version and we choose the strongest together.",
+      w: ["picture this", "have you ever", "so here's my invitation", "as I said at the start", "thank you"] },
+    { t: "Full Rehearsal With Feedback",
+      g: "Deliver your whole signature talk and polish it.",
+      m: "Ask me to deliver my full 5-minute signature talk (record it on my phone if I can). Give detailed feedback on structure, voice, pauses, stories and energy, then let me repeat the weakest section.",
+      w: ["(pause)", "first", "the turning point", "what this means for you", "so here's my invitation"] },
+    { t: "The Q&A Gauntlet",
+      g: "Handle every kind of question after your talk.",
+      m: "Act as a tough audience after my signature talk. Ask 8 questions: friendly, confused, hostile, off-topic, 'I disagree', a long rambling one, one I can't answer and a final easy one. Coach every answer.",
+      w: ["great question", "if I understand you correctly", "I respectfully disagree", "I don't know, but I'll find out", "let's take one more"] },
+    { t: "Panel & Debate Day",
+      g: "Hold your own with other speakers.",
+      m: "Run a panel discussion where you play the moderator and 2 other panellists with different views on a topic I choose. I must introduce myself, make my points, respond to others and give a 30-second closing statement.",
+      w: ["thank you for having me", "building on that", "I see it differently", "the evidence suggests", "my closing thought"] },
+    { t: "Final Assessment: The 100-Day Speaking Test",
+      g: "Measure exactly how far you've come as a speaker.",
+      m: "Give me a 5-part speaking test: (1) a 30-second self-pitch, (2) a 1-minute impromptu answer, (3) a 2-minute story, (4) a 1-minute persuasive pitch, (5) 3 tough Q&A questions. Score each part out of 10 and compare me with a typical beginner and a confident professional speaker. List my strengths and remaining weak spots.",
+      w: ["good morning, everyone", "let me share", "I'll never forget", "here's why", "great question"] },
+    { t: "🎓 Graduation Speech & Speaker-for-Life Plan",
+      g: "Celebrate 100 days and plan how you'll keep growing as a speaker.",
+      m: "Ask me to give a 3-minute graduation speech about my 100-day speaking journey. Then help me build a simple lifelong plan: one short talk every week, recording myself monthly, joining a speaking club (like Toastmasters), and saying yes to every chance to speak.",
+      w: ["100 days ago", "the biggest change", "I learned that", "from now on", "every chance to speak"] }
+  ]
+};
+
+function buildSpeaking100() {
+  const days = SPEAKING_DAYS.map(d => ({ ...d, grp: "fast" }));
+  const headers = {
+    1: { phase: "Phase 1 · Fast Track (Days 1–30)", phaseIcon: "🚀",
+         phaseSub: "Goal: get up and speak with confidence, fast. Every session is short and encouraging — one thing you did well, one thing to improve.",
+         title: "Days 1–10 · Foundations", sub: "Stage fear, voice, self-pitch, body language, filler words and structure." },
+    11: { title: "Days 11–20 · Building", sub: "Storytelling, persuasion, Q&A, humour and event speeches." },
+    21: { title: "Days 21–30 · Mastery", sub: "Motivational talks, work presentations, pitches, debates and your big speech." }
+  };
+  let n = 31;
+  SPEAK_WEEKS.forEach((wk, i) => {
+    const k = i + 1, lv = `Week ${k} · ${wk.theme}`, start = n;
+    headers[start] = { title: `Week ${k} · Days ${start}–${start + 6} — ${wk.theme}`, sub: wk.about };
+    wk.days.forEach(d => { days.push({ ...d, lv, theme: wk.theme, grp: "lock" }); n++; });
+
+    const tip = TIPS[wk.fix - 1];
+    days.push({
+      t: `🔧 Fix-It Day: ${tip.t}`, lv, theme: wk.theme, grp: "lock",
+      g: "Find the speaking habits you repeated this week and fix them before they stick.",
+      note: tip.note,
+      tip: `Want more on this? Practise Tip ${wk.fix} in the Tips tab.`,
+      m: `Ask me to give 3 short talks (45 seconds each) on this week's skills (${wk.days.map(x => x.t).join(", ")}). Watch for my most repeated speaking habits: filler words, rushing, weak openings or closings, a flat voice, and no clear structure. Drill my 2 biggest habits, then finish with a focused drill on today's skill — ${tip.t}: ${tip.note.rule}`,
+      w: tip.w
+    });
+    n++;
+
+    const rv = [3 * k - 2, 3 * k - 1, 3 * k];
+    const words = wk.days.map(x => x.w[0]).concat(wk.days[0].w[1]);
+    days.push({
+      t: `🔁 Weekly Review + Revisit Days ${rv[0]}–${rv[2]}`, lv, theme: wk.theme, grp: "lock",
+      g: "Re-use this week's skills and revisit three early sessions to see how much you've grown.",
+      m: `Part 1: give me 3 of this week's skills and I give a 45-second talk on each, using these phrases: ${words.join(", ")}. Part 2: revisit three Phase 1 sessions — ${rv.map(x => `Day ${x} (${SPEAKING_DAYS[x - 1].t})`).join(", ")}. I redo a short version (1 minute) of each task, and you tell me whether I am clearer, calmer and better structured than in the first 30 days.`,
+      w: words
+    });
+    n++;
+  });
+  headers[n] = { title: `Week 10 · Days ${n}–100 — ${SPEAK_MASTERY.theme}`, sub: SPEAK_MASTERY.about };
+  SPEAK_MASTERY.days.forEach(d => days.push({ ...d, lv: "Week 10 · Mastery", theme: SPEAK_MASTERY.theme, grp: "lock" }));
+  headers[31].phase = "Phase 2 · Lock It In (Days 31–100)";
+  headers[31].phaseIcon = "🔒";
+  headers[31].phaseSub = "Goal: become a natural, polished speaker for life. Each week has 5 new skills, a 🔧 Fix-It day for your speaking habits, and a 🔁 Review day that revisits early sessions. Every session starts with a quick recall — and record yourself on your phone whenever you can.";
+  return { days, headers };
+}
+const SPEAKING_100 = buildSpeaking100();
+
 const MODULES = {
   english: {
     title: "English Communication — 100-Day Program",
@@ -1469,13 +1787,19 @@ const MODULES = {
     prompt: buildEnglishPrompt
   },
   speaking: {
-    title: "Public Speaking Practice",
+    title: "Public Speaking — 100-Day Program",
     icon: "🎤",
-    lead: "One speaking drill per day, 10 minutes each. Turn on Gemini's microphone or Live mode and speak out loud — standing up, as if on stage.",
-    levels: ["Foundations", "Building", "Mastery"],
+    lead: "10 minutes a day for 100 days. Phase 1 (Days 1–30) gets you speaking in front of people with confidence. Phase 2 (Days 31–100) turns you into a natural, polished speaker. Use Gemini's microphone or Live mode and speak out loud — standing up, as if on stage.",
+    filters: [
+      { value: "fast", label: "Phase 1 · Fast Track (1–30)" },
+      { value: "lock", label: "Phase 2 · Lock It In (31–100)" }
+    ],
+    allLabel: "All 100 days",
+    resume: true,
+    headers: SPEAKING_100.headers,
     wordsLabel: "Useful phrases",
     storeKey: "cc-speaking-done",
-    days: SPEAKING_DAYS,
+    days: SPEAKING_100.days,
     prompt: buildSpeakingPrompt
   },
   grammar: {
@@ -1512,27 +1836,45 @@ const MODULES = {
 };
 
 function buildSpeakingPrompt(d, n) {
-  return `You are my encouraging and honest public speaking coach. This is Day ${n} of my 30-day public speaking practice (Level: ${d.lv}).
+  const fast = n <= 30;
+  const intro = fast
+    ? `This is Day ${n} of my 100-day public speaking program — Phase 1: Fast Track (Days 1–30). The goal of this phase is to help me speak in front of people with confidence, fast. My level: ${d.lv}.`
+    : `This is Day ${n} of my 100-day public speaking program — Phase 2: Lock It In (Days 31–100). The goal of this phase is to make me a natural, polished speaker for life. This week's theme: ${d.theme}.`;
+  const step1 = fast
+    ? "Warm-up (2 min): a quick breathing or voice exercise, then one easy 30-second speaking question."
+    : "Recall (2 min): ask me what I practised in my last session, then ask me to give a 30-second mini-talk using one thing I learned.";
+  const rules = fast ? [
+    "After each attempt, give feedback as: 1 thing I did well, 1 thing to improve, and a better version of one of my sentences.",
+    "Be encouraging — the goal right now is confidence, so never make me feel bad about mistakes."
+  ] : [
+    "After each attempt, give detailed feedback on structure, voice (pace, pauses, energy), word choice and filler words, plus a better version of my weakest sentence.",
+    "Make me repeat my weakest part once, better.",
+    "Encourage me to record myself on my phone and tell you what I noticed when I played it back."
+  ];
+  const ending = fast
+    ? "a score out of 10 for Structure, Clarity, Confidence and Engagement; my top 3 improvements; and 1 strong line I can reuse in future talks"
+    : "a score out of 10 for Structure, Clarity, Confidence, Engagement and Voice; my top 3 improvements, written as a short list I can add to my personal speaking-habit list; and 1 strong line I can reuse in future talks";
+  return `You are my encouraging and honest public speaking coach. ${intro}
 
-Topic: ${d.t}
+Topic: ${d.t.replace(/^\W+\s*/, "")}
 Goal: ${d.g}
 
 Run a 10-minute session in this structure:
-1. Warm-up (2 min): a quick breathing or voice exercise, then one easy 30-second speaking question.
+1. ${step1}
 2. Main practice (6 min): ${d.m}
 3. Feedback (2 min): evaluate my speaking.
 
-Useful phrases I should try to use: ${d.w.join(", ")}.
+Useful phrases I should try to use: ${d.w.join(" | ")}.
 
 Rules:
 - Give me ONE task at a time and wait for me to finish speaking.
 - Keep your instructions short so that I speak more than you.
-- After each attempt, give feedback as: 1 thing I did well, 1 thing to improve, and a better version of one of my sentences.
+${rules.map(r => "- " + r).join("\n")}
 - Point out filler words (um, uh, like, actually, basically) and weak or repeated words.
 - If I get stuck or use Malayalam, help me say it in simple English.
-- At the end give me: a score out of 10 for Structure, Clarity, Confidence and Engagement; my top 3 improvements; and 1 strong line I can reuse in future talks.
+- At the end give me: ${ending}.
 
-Start now with a short motivating greeting and the warm-up.`;
+Start now with a short motivating greeting and the ${fast ? "warm-up" : "recall"}.`;
 }
 
 function buildEnglishPrompt(d, n) {
@@ -1880,14 +2222,19 @@ function renderHome() {
   document.getElementById("ringDay").textContent = n || total;
   document.getElementById("ringFg").style.strokeDashoffset = 326.7 * (1 - en.done.size / total);
   if (n) {
-    document.getElementById("nextUp").innerHTML = `Next up · <b>Day ${n}: ${esc(en.days[n - 1].t)}</b>`;
+    document.getElementById("nextUp").innerHTML = `Next up · <b>🗣️ English Day ${n}: ${esc(en.days[n - 1].t)}</b>`;
     document.getElementById("phaseTag").textContent = n <= 30 ? "🚀 Phase 1 · Fast Track" : "🔒 Phase 2 · Lock It In";
-    document.getElementById("heroCta").textContent = `▶ ${en.done.size ? "Continue" : "Start"} Day ${n}`;
+    document.getElementById("heroCta").textContent = `▶ ${en.done.size ? "Continue" : "Start"} English Day ${n}`;
   } else {
-    document.getElementById("nextUp").innerHTML = "<b>You finished all 100 days!</b> Keep your English-for-life routine going.";
+    document.getElementById("nextUp").innerHTML = "<b>You finished all 100 English days!</b> Keep your English-for-life routine going.";
     document.getElementById("phaseTag").textContent = "🎓 Graduate";
     document.getElementById("heroCta").textContent = "Review any day";
   }
+
+  const sp = MODULES.speaking, sn = nextDay(sp);
+  document.getElementById("heroCta2").innerHTML = sn
+    ? `<span>🎤 Speaking · Day ${sn}: ${esc(sp.days[sn - 1].t)}</span><b aria-hidden="true">›</b>`
+    : `<span>🎤 Speaking · all 100 days done! 🎓</span><b aria-hidden="true">›</b>`;
 
   const s = streak();
   const doneAll = Object.values(MODULES).reduce((t, m) => t + m.done.size, 0);
@@ -1967,6 +2314,7 @@ document.getElementById("tabs").addEventListener("click", e => {
 document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () =>
   openTab(b.dataset.goto, b.dataset.jump && (() => document.getElementById(b.dataset.jump).scrollIntoView()))));
 document.getElementById("heroCta").addEventListener("click", () => openTab("english", () => goToNext("english")));
+document.getElementById("heroCta2").addEventListener("click", () => openTab("speaking", () => goToNext("speaking")));
 document.getElementById("totd").addEventListener("click", e => {
   const n = +e.currentTarget.dataset.n;
   openTab("tips", () => flashCard("tips", n));
