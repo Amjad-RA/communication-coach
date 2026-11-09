@@ -138,6 +138,27 @@
   .totd b { display: block; font-size: 1.05rem; font-weight: 900; }
   .totd p { margin: 2px 0 0; font-size: .85rem; color: var(--muted); }
 
+  .cheat { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 12px; box-shadow: var(--shadow); }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--green-softer); border: 1px solid var(--border); border-radius: 14px; padding: 4px; }
+  .seg button { border: 0; background: none; cursor: pointer; padding: 9px 6px; border-radius: 10px; font-size: .88rem; font-weight: 900; color: var(--muted); }
+  .seg button.active { background: #fff; color: var(--green-strong); box-shadow: 0 1px 3px rgba(22, 72, 40, .15); }
+  .cheat-list { display: grid; gap: 8px; margin-top: 10px; }
+  .cheat-item { border: 1px solid var(--border); border-radius: 14px; background: var(--green-softer); overflow: hidden; }
+  .cheat-item[open] { background: #fff; border-color: #b5e6c6; }
+  .cheat-item summary { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; color: var(--text); font-weight: 400; }
+  .cheat-item summary::before { content: none; }
+  .cheat-item summary::after { content: "+"; margin-left: auto; font-weight: 900; font-size: 1.1rem; line-height: 1.2; color: var(--green); }
+  .cheat-item[open] summary::after { content: "–"; }
+  .ci-num { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 8px; background: var(--green-soft); color: var(--green-strong); display: grid; place-items: center; font-size: .75rem; font-weight: 900; margin-top: 1px; }
+  .ci-text { flex: 1; min-width: 0; }
+  .ci-text b { display: block; font-weight: 900; font-size: .92rem; line-height: 1.3; }
+  .ci-text small { display: block; font-size: .82rem; font-weight: 700; color: var(--green-strong); line-height: 1.35; margin-top: 2px; }
+  .cheat-item ul { list-style: none; margin: 0; padding: 0 12px 12px 46px; font-size: .86rem; }
+  .cheat-item li { padding: 2px 0; font-weight: 600; }
+  .cheat-item .ok { color: var(--green-strong); }
+  .cheat-item .bad { color: var(--red); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .cheat-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .btn.quiz { background: var(--green-strong); border-color: var(--green-strong); color: #fff; }
   .modules { display: grid; gap: 10px; }
   .module {
     display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
@@ -310,6 +331,10 @@
     .ring-label b { font-size: 2.1rem; }
     .cta { grid-column: 1; justify-self: start; padding: 14px 28px; }
     .modules { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .cheat { padding: 16px; }
+    .seg { max-width: 420px; }
+    .cheat-list { grid-template-columns: 1fr 1fr; align-items: start; }
+    .cheat-actions { max-width: 420px; margin-left: auto; }
     .days { grid-template-columns: 1fr 1fr; gap: 16px; }
     .phase-banner, .group-head { grid-column: 1 / -1; }
     .progress-card { display: grid; grid-template-columns: 1fr auto; gap: 0 16px; align-items: center; }
@@ -408,6 +433,19 @@
       </div>
       <span class="m-arrow">›</span>
     </button>
+
+    <h2 class="section-title">📋 Cheat sheet</h2>
+    <div class="cheat">
+      <div class="seg" id="cheatSeg" role="tablist" aria-label="Cheat sheet">
+        <button data-sheet="grammar" role="tab">📘 Grammar</button>
+        <button data-sheet="speaking" role="tab">🗣️ Speaking tricks</button>
+      </div>
+      <div class="cheat-list" id="cheatList"></div>
+      <div class="cheat-actions">
+        <button class="btn" id="cheatToggle">Expand all</button>
+        <button class="btn quiz" id="cheatQuiz">✦ Quiz me in Gemini</button>
+      </div>
+    </div>
 
     <h2 class="section-title">Your skills</h2>
     <div class="modules">
@@ -1707,6 +1745,129 @@ function streak() {
   return s;
 }
 
+// ---------- Home cheat sheet ----------
+const CHEAT = {
+  grammar: {
+    label: "📘 Grammar",
+    name: "English grammar",
+    items: [
+      { t: "Sentence order", f: "Subject + Verb + Object + Place + Time",
+        ok: ["I met Ravi at the station yesterday."], bad: ["Yesterday I at the station Ravi met."] },
+      { t: "Present simple (habits, facts)", f: "I/you/we/they work · he/she/it works · doesn't + base verb",
+        ok: ["She works in a bank.", "He doesn't like tea."], bad: ["She work in a bank.", "He don't likes tea."] },
+      { t: "Present continuous (now, temporary)", f: "am / is / are + verb-ing",
+        ok: ["I'm working from home this week."], bad: ["I am going to office daily. (habit → I go)"] },
+      { t: "Past simple (finished time)", f: "went, saw, bought… · did + base verb in questions & negatives",
+        ok: ["I went to Kochi last week.", "Did you call him?"], bad: ["Did you called him?", "I didn't went."] },
+      { t: "Present perfect (experience, up to now)", f: "have / has + past participle (V3) — no exact past time",
+        ok: ["I've lived here since 2020.", "Have you ever been to Delhi?"], bad: ["I have seen him yesterday."] },
+      { t: "Future", f: "will = decide now / predict · going to = plan · am/is/are + -ing = fixed arrangement",
+        ok: ["I'll call you later.", "I'm going to learn driving.", "I'm meeting him at 3."], bad: ["I will going to learn driving."] },
+      { t: "Questions", f: "(Wh-word) + helping verb + subject + main verb?",
+        ok: ["Where do you work?", "Why are you late?", "Does she live here?"], bad: ["Where you work?", "Why you are late?"] },
+      { t: "Polite / indirect questions", f: "Could you tell me / Do you know + normal sentence order",
+        ok: ["Could you tell me where the station is?"], bad: ["Could you tell me where is the station?"] },
+      { t: "Articles: a / an / the", f: "a + consonant sound · an + vowel sound · the = specific / already known",
+        ok: ["He is an engineer.", "an hour · a university", "I bought a phone. The phone is great."], bad: ["He is engineer."] },
+      { t: "Prepositions: at / on / in", f: "at 5 pm, at home · on Monday, on the table · in June, in Kochi",
+        ok: ["See you on Monday at 10.", "I reached home."], bad: ["See you in Monday.", "I reached to home."] },
+      { t: "since / for / ago", f: "since + start point · for + length of time · ago + past simple",
+        ok: ["since 2020 · for three years", "I joined three years ago."], bad: ["I am working here since 2020."] },
+      { t: "If sentences", f: "If + present, will (real) · If + past, would (imaginary)",
+        ok: ["If it rains, I'll stay home.", "If I were rich, I'd travel the world."], bad: ["If it will rain, I stay home."] },
+      { t: "Comparing", f: "short: -er / -est · long: more / most · not as … as",
+        ok: ["Kochi is bigger than my town.", "It's the most beautiful beach."], bad: ["more better", "most biggest"] }
+    ]
+  },
+  speaking: {
+    label: "🗣️ Speaking tricks",
+    name: "English speaking tricks and phrases",
+    items: [
+      { t: "Buy time (no 'umm')", f: "Pause 2–3 seconds, then use a phrase",
+        ok: ["That's a good question…", "Let me think for a second.", "Off the top of my head,"], bad: ["Umm… uhh… actually basically…"] },
+      { t: "Give your opinion", f: "Point → Reason → Example → Point",
+        ok: ["In my opinion…", "I'd say…", "Personally, I think… because…"] },
+      { t: "Agree & disagree politely", f: "Agree warmly · disagree softly + reason",
+        ok: ["Exactly! / I couldn't agree more.", "I see your point, but…", "I'm not so sure about that."], bad: ["You are wrong."] },
+      { t: "Didn't understand?", f: "Ask — it's normal and polite",
+        ok: ["Sorry, could you say that again?", "Could you speak a bit slower?", "What do you mean by…?"] },
+      { t: "Stuck for a word?", f: "Describe or rephrase — don't stop",
+        ok: ["What I mean is…", "Let me put it another way.", "It's a kind of… / It's used for…"], bad: ["(long silence)", "Leave it."] },
+      { t: "Keep the chat going", f: "Answer + one detail + question back",
+        ok: ["What about you?", "Really? Tell me more.", "How did that happen?"], bad: ["Yes. / No. / Ok."] },
+      { t: "Polite requests", f: "Could / Would / I was wondering if…",
+        ok: ["Could you send me the file, please?", "Would you mind waiting a minute?"], bad: ["Send me the file."] },
+      { t: "Link your ideas", f: "and · but · so · because · also · however · for example · finally",
+        ok: ["I was tired, so I went home early.", "It's cheap. However, it's slow."] },
+      { t: "Sound natural", f: "Contractions + stress key words + pause at commas",
+        ok: ["I'm not sure. / I can't make it.", "I WANT to GO to the MARket."], bad: ["I am not able to come."] },
+      { t: "Sound confident", f: "Fewer 'sorry' and 'just' · end sentences with a falling tone ↘",
+        ok: ["Do you have a minute?", "I recommend option B. ↘"], bad: ["Sorry to disturb, I just have one small doubt…"] },
+      { t: "Global English, not Indian English", f: "Say it the way the whole world understands",
+        ok: ["I have a question.", "Please reply.", "Let's move the meeting earlier."], bad: ["I have a doubt.", "Kindly revert back.", "Let's prepone the meeting."] },
+      { t: "Start & end conversations", f: "Friendly opener · polite exit",
+        ok: ["How's your week going?", "It was great talking to you!", "I'd better get going — see you soon."], bad: ["Ok, bye. (walk away)"] },
+      { t: "Clear pronunciation", f: "Slow down a little · finish word endings · no extra y / w / u",
+        ok: ["end · open · bus", "walked · played · wanted"], bad: ["yend · wopen · bus-u"] }
+    ]
+  }
+};
+const CHEAT_KEY = "cc-cheat-sheet";
+let cheatSheet = "grammar";
+try { if (CHEAT[localStorage.getItem(CHEAT_KEY)]) cheatSheet = localStorage.getItem(CHEAT_KEY); } catch {}
+
+function renderCheat() {
+  const sheet = CHEAT[cheatSheet];
+  document.querySelectorAll("#cheatSeg button").forEach(b => {
+    const on = b.dataset.sheet === cheatSheet;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on);
+  });
+  document.getElementById("cheatList").innerHTML = sheet.items.map((it, i) => `
+    <details class="cheat-item">
+      <summary>
+        <span class="ci-num">${i + 1}</span>
+        <span class="ci-text"><b>${esc(it.t)}</b><small>${esc(it.f)}</small></span>
+      </summary>
+      <ul>${it.ok.map(x => `<li class="ok">✔ ${esc(x)}</li>`).join("")}${(it.bad || []).map(x => `<li class="bad">✘ ${esc(x)}</li>`).join("")}</ul>
+    </details>`).join("");
+  document.getElementById("cheatToggle").textContent = "Expand all";
+}
+
+function cheatQuizPrompt() {
+  const sheet = CHEAT[cheatSheet];
+  const lines = sheet.items.map((it, i) =>
+    `${i + 1}. ${it.t}: ${it.f}. Correct: ${it.ok.join(" / ")}${it.bad ? `. Wrong: ${it.bad.join(" / ")}` : ""}`).join("\n");
+  return `You are my friendly English coach. I am a Malayalam speaker. Here is my cheat sheet for ${sheet.name}:
+
+${lines}
+
+Run a 10-minute quiz on this cheat sheet:
+- Ask me ONE question at a time and wait for my answer.
+- Mix the question types: fill in the blank, correct the mistake, choose the right option, and "say a sentence using this rule / phrase".
+- Cover as many different points from the cheat sheet as you can, starting easy and getting harder.
+- After each answer say ✅ or ❌. If wrong, show "Better: ..." and explain why in ONE short line.
+- Keep count of my score.
+- At the end give me: my score, the 3 points I should review again, and 3 example sentences to memorise.
+
+Start now with the first question.`;
+}
+
+document.getElementById("cheatSeg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b || b.dataset.sheet === cheatSheet) return;
+  cheatSheet = b.dataset.sheet;
+  try { localStorage.setItem(CHEAT_KEY, cheatSheet); } catch {}
+  renderCheat();
+});
+document.getElementById("cheatToggle").addEventListener("click", e => {
+  const items = [...document.querySelectorAll("#cheatList details")];
+  const open = !items.every(d => d.open);
+  items.forEach(d => d.open = open);
+  e.currentTarget.textContent = open ? "Collapse all" : "Expand all";
+});
+document.getElementById("cheatQuiz").addEventListener("click", () => openGemini(cheatQuizPrompt()));
+
 // ---------- Home dashboard ----------
 const ALL_PHRASES = [...new Set(MODULES.english.days.flatMap(d => d.w))];
 function renderHome() {
@@ -1814,6 +1975,7 @@ window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
 
 Object.keys(MODULES).forEach(renderModule);
 renderHome();
+renderCheat();
 showTab(location.hash.slice(1) || "home");
 </script>
 </body>

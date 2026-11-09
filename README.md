@@ -2,7 +2,7 @@
 
 A single-page HTML communication coach. Open `index.html` in any browser — no install needed.
 
-Mobile-first, light green design: bottom tab bar on phones (top bar on desktop), a Home dashboard with today's session, a 100-day progress ring, a 🔥 day streak, sessions/minutes done and a phrase of the day. On a phone, use **Add to Home screen** to open it like an app.
+Mobile-first, light green design: bottom tab bar on phones (top bar on desktop), a Home dashboard with today's session, a 100-day progress ring, a 🔥 day streak, sessions/minutes done, a phrase of the day, a tip of the day and a **📋 Cheat sheet** (13 grammar rules and 13 speaking tricks, each with ✔/✘ examples, plus a "Quiz me in Gemini" button). On a phone, use **Add to Home screen** to open it like an app.
 
 Live: https://amjad-ra.github.io/communication-coach/
 
