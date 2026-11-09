@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communication Coach</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --text: #1d2433;
+    --muted: #5f6b7f;
+    --border: #e1e6ef;
+    --accent: #3d5afe;
+    --accent-soft: #eaeeff;
+    --good: #1e9e63;
+    --good-soft: #e3f6ec;
+    --chip: #f0f2f7;
+    --shadow: 0 1px 2px rgba(20,30,60,.06), 0 4px 14px rgba(20,30,60,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11141b;
+      --surface: #1a1f2a;
+      --text: #e8ecf4;
+      --muted: #9aa5b8;
+      --border: #2a3140;
+      --accent: #7c8dff;
+      --accent-soft: #252c48;
+      --good: #4cc78d;
+      --good-soft: #1b3329;
+      --chip: #242a37;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    max-width: 1100px; margin: 0 auto; padding: 12px 16px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { font-weight: 700; font-size: 1.1rem; margin-right: auto; }
+  .brand span { color: var(--accent); }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav button {
+    border: 0; background: none; color: var(--muted);
+    font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer;
+  }
+  nav button:hover { background: var(--chip); color: var(--text); }
+  nav button.active { background: var(--accent-soft); color: var(--accent); }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+  section[data-page] { display: none; }
+  section[data-page].show { display: block; }
+  h1 { font-size: 1.7rem; margin: 0 0 6px; }
+  h2 { font-size: 1.2rem; margin: 32px 0 12px; }
+  .lead { color: var(--muted); margin: 0 0 20px; max-width: 680px; }
+
+  /* Home */
+  .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .module {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; box-shadow: var(--shadow); text-align: left; font: inherit; color: inherit;
+    cursor: pointer; transition: transform .15s, border-color .15s;
+  }
+  .module:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); }
+  .module:disabled { cursor: default; opacity: .6; }
+  .module .icon { font-size: 1.8rem; }
+  .module h3 { margin: 8px 0 4px; font-size: 1.05rem; }
+  .module p { margin: 0; color: var(--muted); font-size: .92rem; }
+  .tag { display: inline-block; margin-top: 12px; font-size: .75rem; font-weight: 700;
+         padding: 3px 10px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+  .tag.soon { background: var(--chip); color: var(--muted); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;
+           padding: 0; margin: 0; list-style: none; counter-reset: s; }
+  .steps li { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: .92rem; }
+  .steps li::before { counter-increment: s; content: counter(s); display: inline-grid; place-items: center;
+           width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff;
+           font-weight: 700; font-size: .8rem; margin-right: 8px; }
+
+  /* English page toolbar */
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filters button {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    font: inherit; font-size: .88rem; padding: 6px 14px; border-radius: 99px; cursor: pointer;
+  }
+  .filters button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .progress { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: .88rem; color: var(--muted); }
+  .progress .track { width: 140px; height: 8px; background: var(--chip); border-radius: 99px; overflow: hidden; }
+  .progress .fill { height: 100%; width: 0; background: var(--good); transition: width .3s; }
+
+  /* Day cards */
+  .days { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); display: flex; overflow: hidden;
+  }
+  .card.done { border-color: var(--good); }
+  .card .body { flex: 1; padding: 18px 18px 16px; min-width: 0; }
+  .meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: .78rem; font-weight: 700; }
+  .day { background: var(--accent); color: #fff; padding: 2px 10px; border-radius: 99px; }
+  .lvl { color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .time { color: var(--muted); }
+  .done-badge { display: none; color: var(--good); }
+  .card.done .done-badge { display: inline; }
+  .card h3 { margin: 8px 0 4px; font-size: 1.08rem; }
+  .goal { margin: 0 0 12px; color: var(--muted); font-size: .92rem; }
+  .label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 6px; }
+  .words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .words span { background: var(--chip); padding: 3px 10px; border-radius: 6px; font-size: .85rem; }
+  details { font-size: .88rem; }
+  summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+  .plan { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+  pre.prompt {
+    white-space: pre-wrap; font: .82rem/1.5 ui-monospace, Menlo, Consolas, monospace;
+    background: var(--chip); padding: 10px 12px; border-radius: 8px; margin: 8px 0 0; color: var(--text);
+  }
+  .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    font: inherit; font-size: .85rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .card.done .btn.mark { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+
+  .side {
+    width: 92px; flex-shrink: 0; border-left: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; background: var(--accent-soft);
+  }
+  .gemini {
+    border: 0; background: var(--surface); width: 60px; height: 60px; border-radius: 16px; cursor: pointer;
+    display: grid; place-items: center; box-shadow: var(--shadow); transition: transform .15s;
+  }
+  .gemini:hover { transform: scale(1.08); }
+  .gemini svg { width: 32px; height: 32px; }
+  .side small { display: block; text-align: center; font-size: .7rem; font-weight: 700; color: var(--accent); margin-top: 6px; }
+
+  @media (max-width: 520px) {
+    .card { flex-direction: column; }
+    .side { width: auto; border-left: 0; border-top: 1px solid var(--border); padding: 10px; gap: 10px; }
+    .side small { margin: 0; }
+    .side > div { display: flex; align-items: center; gap: 10px; }
+    .gemini { width: 48px; height: 48px; }
+    .progress { margin-left: 0; }
+  }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+    background: #1d2433; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: .9rem;
+    opacity: 0; pointer-events: none; transition: .25s; max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">💬 Communication <span>Coach</span></div>
+    <nav id="tabs">
+      <button data-tab="home">Home</button>
+      <button data-tab="english">English Practice</button>
+      <button data-tab="about">How to Use</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section data-page="home">
+    <h1>Your personal communication coach</h1>
+    <p class="lead">Pick a skill, practice for 10 minutes a day, and build confidence step by step. Each session opens in Gemini with a ready-made coaching prompt.</p>
+
+    <div class="modules">
+      <button class="module" data-goto="english">
+        <div class="icon">🗣️</div>
+        <h3>English Communication</h3>
+        <p>30 daily speaking sessions — from self-introduction to job interviews and debates.</p>
+        <span class="tag">Start practicing →</span>
+      </button>
+      <button class="module" disabled>
+        <div class="icon">🎤</div>
+        <h3>Public Speaking</h3>
+        <p>Presentations, stage confidence and storytelling.</p>
+        <span class="tag soon">Coming soon</span>
+      </button>
+      <button class="module" disabled>
+        <div class="icon">💼</div>
+        <h3>Interview Skills</h3>
+        <p>HR, technical and behavioural interview practice.</p>
+        <span class="tag soon">Coming soon</span>
+      </button>
+      <button class="module" disabled>
+        <div class="icon">✉️</div>
+        <h3>Professional Writing</h3>
+        <p>Emails, messages and reports that sound clear and polite.</p>
+        <span class="tag soon">Coming soon</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ENGLISH -->
+  <section data-page="english">
+    <h1>English Communication Practice</h1>
+    <p class="lead">One topic per day, 10 minutes each. Read the topic and useful words, then tap the Gemini button on the right to start your session.</p>
+
+    <div class="toolbar">
+      <div class="filters" id="filters">
+        <button data-level="all" class="active">All days</button>
+        <button data-level="Beginner">Beginner (1–10)</button>
+        <button data-level="Intermediate">Intermediate (11–20)</button>
+        <button data-level="Advanced">Advanced (21–30)</button>
+      </div>
+      <div class="progress">
+        <span id="progressText">0 / 30 done</span>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <div class="days" id="days"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section data-page="about">
+    <h1>How to use</h1>
+    <p class="lead">Every session follows the same simple 10-minute plan.</p>
+    <ol class="steps">
+      <li>Open <b>English Practice</b> and find today's day card.</li>
+      <li>Read the topic and say the useful words out loud once.</li>
+      <li>Tap the <b>Gemini</b> button. The prompt is copied and Gemini opens in a new tab.</li>
+      <li>If the chat box is empty, paste (Ctrl+V / long-press → Paste) and send.</li>
+      <li>Use Gemini's microphone or Live mode to <b>speak</b> your answers.</li>
+      <li>Come back and tap <b>Mark as done</b> to track your progress.</li>
+    </ol>
+    <h2>The 10-minute plan</h2>
+    <ol class="steps">
+      <li><b>Warm-up · 2 min</b><br>Two easy questions on the topic.</li>
+      <li><b>Main practice · 6 min</b><br>Conversation or role-play, one question at a time, with gentle corrections.</li>
+      <li><b>Feedback · 2 min</b><br>Scores, your top 3 mistakes and one sentence to remember.</li>
+    </ol>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DAYS = [
+  // ---------- Beginner ----------
+  { t: "Introducing Yourself", lv: "Beginner",
+    g: "Introduce yourself clearly and confidently in under one minute.",
+    m: "Act as a new colleague meeting me on my first day. Ask me about my name, hometown, work or studies, and hobbies. Then ask me to give a full 1-minute self-introduction.",
+    w: ["originally from", "currently", "I work as", "passionate about", "in my free time", "nice to meet you"] },
+  { t: "My Daily Routine", lv: "Beginner",
+    g: "Describe your day using the present simple tense and time expressions.",
+    m: "Ask me to walk you through a normal weekday from morning to night. Ask follow-up questions about times, habits and what I enjoy or dislike in my day.",
+    w: ["usually", "wake up", "commute", "after that", "in the evening", "habit", "schedule"] },
+  { t: "Family & Friends", lv: "Beginner",
+    g: "Talk about the people close to you and describe relationships.",
+    m: "Ask me about my family members and my best friend. Encourage me to describe what they are like and what we do together.",
+    w: ["siblings", "get along with", "close to", "supportive", "relatives", "we often"] },
+  { t: "Ordering at a Restaurant", lv: "Beginner",
+    g: "Order food politely and ask simple questions about the menu.",
+    m: "Role-play: you are a waiter at a restaurant and I am the customer. Greet me, take my order, suggest a dish, and finally bring the bill.",
+    w: ["I'd like", "could I have", "what do you recommend", "not too spicy", "the bill, please", "takeaway"] },
+  { t: "Shopping & Asking Prices", lv: "Beginner",
+    g: "Ask about prices, sizes and returns politely.",
+    m: "Role-play: you are a shop assistant in a clothing store. I want to buy a shirt. Let me ask about size, colour, price and discounts, and then try to exchange something.",
+    w: ["how much is", "discount", "size", "try it on", "exchange", "receipt", "can't afford"] },
+  { t: "Asking & Giving Directions", lv: "Beginner",
+    g: "Ask for and give directions using place words.",
+    m: "Role-play: I am a tourist and you are a local. First I ask you for directions to a place. Then switch roles: you are lost and I must give you directions.",
+    w: ["go straight", "turn left", "opposite", "next to", "landmark", "far from", "excuse me"] },
+  { t: "Weather & Seasons", lv: "Beginner",
+    g: "Make small talk about the weather and your favourite season.",
+    m: "Chat with me about today's weather, my favourite season and how weather changes my plans. Ask me to compare the monsoon with summer.",
+    w: ["humid", "monsoon", "pleasant", "pouring", "forecast", "chilly", "I prefer"] },
+  { t: "Hobbies & Free Time", lv: "Beginner",
+    g: "Talk about what you enjoy and why.",
+    m: "Ask me about my hobbies, how I started them and why I enjoy them. Ask me to recommend one hobby to you and convince you to try it.",
+    w: ["I enjoy", "interested in", "recently started", "relaxing", "it helps me", "you should try"] },
+  { t: "Making a Phone Call", lv: "Beginner",
+    g: "Handle a simple phone call: greet, ask, and leave a message.",
+    m: "Role-play: I call a clinic to book an appointment. You are the receptionist. Then do a second call where the person I want is not available and I leave a message.",
+    w: ["may I speak to", "hold on", "call back", "leave a message", "could you repeat that", "speaking"] },
+  { t: "My Hometown", lv: "Beginner",
+    g: "Describe a place using adjectives and comparisons.",
+    m: "Ask me to describe my hometown: what it is famous for, the food, the people, and what a visitor should see. Ask me to compare it with a big city.",
+    w: ["famous for", "neighbourhood", "peaceful", "crowded", "worth visiting", "compared to"] },
+
+  // ---------- Intermediate ----------
+  { t: "Talking About Work or Studies", lv: "Intermediate",
+    g: "Explain what you do, your responsibilities and challenges.",
+    m: "Act as someone I meet at a networking event. Ask what I do, my main responsibilities, a challenge I faced recently and what I'm proud of.",
+    w: ["responsible for", "deadline", "colleague", "project", "challenging", "achieve", "handle"] },
+  { t: "Small Talk Skills", lv: "Intermediate",
+    g: "Start, continue and politely end a casual conversation.",
+    m: "Role-play: we meet at a wedding or a coffee break. Help me practice starting the conversation, asking follow-up questions, and ending it politely.",
+    w: ["how's it going", "by the way", "what about you", "sounds great", "anyway", "it was nice talking"] },
+  { t: "Telling a Story from the Past", lv: "Intermediate",
+    g: "Tell a short story using past tense and linking words.",
+    m: "Ask me to tell a story about a memorable day in my life (a trip, a funny moment or a problem I solved). Ask questions to help me add details and feelings.",
+    w: ["I remember when", "suddenly", "after that", "eventually", "I felt", "in the end"] },
+  { t: "Expressing Opinions", lv: "Intermediate",
+    g: "Give and support your opinion with reasons and examples.",
+    m: "Give me three simple statements one by one (e.g. 'Mobile phones should be banned in schools'). For each, ask me to agree or disagree and give two reasons.",
+    w: ["in my opinion", "I believe", "on the other hand", "I partly agree", "for example", "that's why"] },
+  { t: "Making Plans & Invitations", lv: "Intermediate",
+    g: "Invite, accept, decline politely and suggest alternatives.",
+    m: "Role-play: you are my friend. We plan a weekend outing. Invite me, then I invite you; practice accepting, refusing politely and suggesting another time.",
+    w: ["would you like to", "are you free", "how about", "I'm afraid I can't", "let's", "another time"] },
+  { t: "Travel & Holidays", lv: "Intermediate",
+    g: "Describe a past trip and plan a future one.",
+    m: "Ask me about the best trip I've taken. Then role-play a travel agent helping me plan my next holiday with budget, dates and activities.",
+    w: ["destination", "itinerary", "book", "sightseeing", "budget", "memorable", "on the way"] },
+  { t: "At the Doctor", lv: "Intermediate",
+    g: "Explain symptoms and understand advice.",
+    m: "Role-play: you are a doctor and I am a patient. Ask me about my symptoms, how long I've had them and give advice. Help me describe pain and feelings clearly.",
+    w: ["symptoms", "I've been feeling", "fever", "dizzy", "prescription", "appointment", "since"] },
+  { t: "Technology in Daily Life", lv: "Intermediate",
+    g: "Discuss pros and cons using comparison language.",
+    m: "Discuss with me how technology and social media affect my life. Ask me about advantages, disadvantages and whether I spend too much screen time.",
+    w: ["convenient", "rely on", "screen time", "addicted", "advantage", "drawback", "nowadays"] },
+  { t: "Making a Polite Complaint", lv: "Intermediate",
+    g: "Complain firmly but politely and ask for a solution.",
+    m: "Role-play: I bought a product online that arrived damaged. You are customer support. Let me explain the problem and ask for a refund or replacement.",
+    w: ["I'm sorry to bother you", "unfortunately", "damaged", "refund", "replace", "I'd appreciate it if"] },
+  { t: "Describing People", lv: "Intermediate",
+    g: "Describe appearance and personality with rich adjectives.",
+    m: "Ask me to describe a person I admire, a teacher I remember and a difficult person I know. Push me to use varied adjectives instead of 'good' and 'nice'.",
+    w: ["outgoing", "reliable", "hard-working", "patient", "sense of humour", "down-to-earth"] },
+
+  // ---------- Advanced ----------
+  { t: "Interview: Tell Me About Yourself", lv: "Advanced",
+    g: "Deliver a structured, professional self-introduction.",
+    m: "Act as an HR interviewer. Start with 'Tell me about yourself', then ask about my strengths, why I want this job and where I see myself. Coach me on structure (present – past – future).",
+    w: ["background", "experience in", "strengths", "motivated", "contribute", "I'm keen to"] },
+  { t: "Interview: Tough Questions", lv: "Advanced",
+    g: "Answer difficult questions calmly using the STAR method.",
+    m: "Act as an interviewer and ask me tough behavioural questions (my weakness, a conflict at work, a failure). Help me answer using STAR: Situation, Task, Action, Result.",
+    w: ["weakness", "handled", "conflict", "I learned", "prioritise", "as a result"] },
+  { t: "Workplace Meetings", lv: "Advanced",
+    g: "Share updates, interrupt politely and agree on next steps.",
+    m: "Role-play a team meeting where you are my manager. Ask me for a project update, raise a problem, and let me suggest solutions and summarise action items.",
+    w: ["agenda", "update", "if I may add", "I suggest", "follow up", "action items", "by Friday"] },
+  { t: "Giving a Short Presentation", lv: "Advanced",
+    g: "Present a topic with a clear opening, body and conclusion.",
+    m: "Ask me to give a 2-minute presentation on a topic I choose (or suggest one). Then ask me two audience questions and give feedback on structure and signposting.",
+    w: ["first of all", "moving on", "key point", "as you can see", "to sum up", "any questions"] },
+  { t: "Debate: Work From Home vs Office", lv: "Advanced",
+    g: "Argue a position and respond to counterarguments.",
+    m: "Hold a friendly debate with me. I argue for working from home, you argue for the office. Challenge my points and then switch sides.",
+    w: ["I'd argue that", "evidence", "whereas", "that may be true, but", "ultimately", "productivity"] },
+  { t: "Negotiation", lv: "Advanced",
+    g: "Negotiate a deal and find a compromise.",
+    m: "Role-play a salary negotiation: you are the hiring manager making me an offer. Let me negotiate salary, benefits or joining date until we reach a compromise.",
+    w: ["offer", "flexible", "compromise", "terms", "meet halfway", "I was hoping for"] },
+  { t: "Handling Disagreements", lv: "Advanced",
+    g: "Disagree diplomatically without sounding rude.",
+    m: "Role-play: you are a colleague with a different idea about a project. Disagree with me in different ways and help me respond diplomatically and propose alternatives.",
+    w: ["I see your point", "with respect", "I'm not sure that", "alternatively", "my concern is", "let's find"] },
+  { t: "Professional Client Call", lv: "Advanced",
+    g: "Lead a short, clear and polite call with a client.",
+    m: "Role-play: I call you, a client, to give an update about a delayed delivery. Let me explain the reason, apologise, confirm a new date and handle your concerns.",
+    w: ["I'm calling regarding", "apologise for", "clarify", "confirm", "I'll keep you updated", "rest assured"] },
+  { t: "Explaining a Process", lv: "Advanced",
+    g: "Explain steps clearly using sequence language.",
+    m: "Ask me to explain a process I know well (cooking a dish, using an app, or a task at work). Ask clarifying questions as if you were a beginner.",
+    w: ["first", "next", "make sure", "once you've", "otherwise", "finally"] },
+  { t: "Future Goals & Final Review", lv: "Advanced",
+    g: "Talk about your goals and reflect on your 30-day progress.",
+    m: "Ask me about my short-term and long-term goals and how English will help me. Then ask me to reflect on what I learned in these 30 days and give me a final overall assessment.",
+    w: ["aspire to", "long-term", "in five years", "determined", "progress", "I've improved"] }
+];
+
+function buildPrompt(d, n) {
+  return `You are my friendly and patient English communication coach. This is Day ${n} of my 30-day speaking practice (Level: ${d.lv}).
+
+Topic: ${d.t}
+Goal: ${d.g}
+
+Run a 10-minute session in this structure:
+1. Warm-up (2 min): ask me 2 easy questions about the topic.
+2. Main practice (6 min): ${d.m}
+3. Feedback (2 min): summarise how I did.
+
+Useful words I should try to use: ${d.w.join(", ")}.
+
+Rules:
+- Ask only ONE question at a time and wait for my answer.
+- Keep your replies short (2-3 sentences) so that I speak more than you.
+- After each answer, gently correct my mistakes like this: "Better: ..." and suggest a more natural phrase when useful.
+- If I get stuck or use Malayalam, help me say it in simple English.
+- Encourage me to use the useful words above.
+- At the end give me: a score out of 10 for Fluency, Grammar and Vocabulary; my top 3 mistakes with corrections; and 1 useful sentence to remember today.
+
+Start now with a short greeting and the first warm-up question.`;
+}
+
+const GEMINI_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285f4"/><stop offset=".5" stop-color="#9b72cb"/><stop offset="1" stop-color="#d96570"/></linearGradient></defs><path fill="url(#gg)" d="M12 2c.5 5.3 4.7 9.5 10 10-5.3.5-9.5 4.7-10 10-.5-5.3-4.7-9.5-10-10 5.3-.5 9.5-4.7 10-10z"/></svg>`;
+
+const STORE_KEY = "cc-english-done";
+function loadDone() { try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]")); } catch { return new Set(); } }
+function saveDone() { try { localStorage.setItem(STORE_KEY, JSON.stringify([...done])); } catch {} }
+const done = loadDone();
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function renderDays() {
+  document.getElementById("days").innerHTML = DAYS.map((d, i) => {
+    const n = i + 1;
+    return `
+    <article class="card ${done.has(n) ? "done" : ""}" data-n="${n}" data-level="${d.lv}">
+      <div class="body">
+        <div class="meta">
+          <span class="day">Day ${n}</span>
+          <span class="lvl">${d.lv}</span>
+          <span class="time">⏱ 10 min</span>
+          <span class="done-badge">✓ Completed</span>
+        </div>
+        <h3>${esc(d.t)}</h3>
+        <p class="goal">${esc(d.g)}</p>
+        <p class="label">Useful words</p>
+        <div class="words">${d.w.map(w => `<span>${esc(w)}</span>`).join("")}</div>
+        <details>
+          <summary>Session plan &amp; prompt</summary>
+          <ol class="plan">
+            <li>Warm-up · 2 min</li>
+            <li>Main practice · 6 min — ${esc(d.m)}</li>
+            <li>Feedback · 2 min</li>
+          </ol>
+          <pre class="prompt">${esc(buildPrompt(d, n))}</pre>
+        </details>
+        <div class="actions">
+          <button class="btn copy">📋 Copy prompt</button>
+          <button class="btn mark">${done.has(n) ? "✓ Done" : "Mark as done"}</button>
+        </div>
+      </div>
+      <div class="side">
+        <div>
+          <button class="gemini" title="Open this prompt in Gemini" aria-label="Open Day ${n} in Gemini">${GEMINI_ICON}</button>
+          <small>Open in<br>Gemini</small>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+  updateProgress();
+}
+
+function updateProgress() {
+  document.getElementById("progressText").textContent = `${done.size} / ${DAYS.length} done`;
+  document.getElementById("progressFill").style.width = `${(done.size / DAYS.length) * 100}%`;
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 4500);
+}
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).then(() => true, () => fallbackCopy(text));
+  }
+  return Promise.resolve(fallbackCopy(text));
+}
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch {}
+  ta.remove();
+  return ok;
+}
+
+function openGemini(prompt) {
+  // Copy first (so the user can always paste), then open Gemini with the prompt in the URL.
+  copyText(prompt).then(ok => toast(ok
+    ? "Prompt copied ✓ — if Gemini's chat box is empty, just paste (Ctrl+V / long-press → Paste) and send."
+    : "Gemini opened. Use “Copy prompt” and paste it into the chat."));
+  window.open("https://gemini.google.com/app?q=" + encodeURIComponent(prompt), "_blank", "noopener");
+}
+
+document.getElementById("days").addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const n = +card.dataset.n;
+  const prompt = buildPrompt(DAYS[n - 1], n);
+  if (e.target.closest(".gemini")) openGemini(prompt);
+  else if (e.target.closest(".copy")) copyText(prompt).then(ok => toast(ok ? "Prompt copied ✓" : "Copy failed — open “Session plan & prompt” and copy manually."));
+  else if (e.target.closest(".mark")) {
+    done.has(n) ? done.delete(n) : done.add(n);
+    saveDone();
+    card.classList.toggle("done", done.has(n));
+    card.querySelector(".mark").textContent = done.has(n) ? "✓ Done" : "Mark as done";
+    updateProgress();
+  }
+});
+
+document.getElementById("filters").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("active", x === b));
+  const lv = b.dataset.level;
+  document.querySelectorAll(".card").forEach(c => c.style.display = (lv === "all" || c.dataset.level === lv) ? "" : "none");
+});
+
+// Tabs (hash-based so the browser back button works)
+function showTab(name) {
+  if (!document.querySelector(`[data-page="${name}"]`)) name = "home";
+  document.querySelectorAll("[data-page]").forEach(p => p.classList.toggle("show", p.dataset.page === name));
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+  window.scrollTo(0, 0);
+}
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b) location.hash = b.dataset.tab;
+});
+document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => location.hash = b.dataset.goto));
+window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
+
+renderDays();
+showTab(location.hash.slice(1) || "home");
+</script>
+</body>
+</html>
