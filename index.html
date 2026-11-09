@@ -171,6 +171,7 @@
     <nav id="tabs">
       <button data-tab="home">Home</button>
       <button data-tab="english">English Practice</button>
+      <button data-tab="speaking">Public Speaking</button>
       <button data-tab="about">How to Use</button>
     </nav>
   </div>
@@ -189,11 +190,11 @@
         <p>30 daily speaking sessions — from self-introduction to job interviews and debates.</p>
         <span class="tag">Start practicing →</span>
       </button>
-      <button class="module" disabled>
+      <button class="module" data-goto="speaking">
         <div class="icon">🎤</div>
         <h3>Public Speaking</h3>
-        <p>Presentations, stage confidence and storytelling.</p>
-        <span class="tag soon">Coming soon</span>
+        <p>30 daily speaking drills — stage fear, structure, storytelling, presentations and pitches.</p>
+        <span class="tag">Start practicing →</span>
       </button>
       <button class="module" disabled>
         <div class="icon">💼</div>
@@ -211,33 +212,18 @@
   </section>
 
   <!-- ENGLISH -->
-  <section data-page="english">
-    <h1>English Communication Practice</h1>
-    <p class="lead">One topic per day, 10 minutes each. Read the topic and useful words, then tap the Gemini button on the right to start your session.</p>
+  <section data-page="english" data-module="english"></section>
 
-    <div class="toolbar">
-      <div class="filters" id="filters">
-        <button data-level="all" class="active">All days</button>
-        <button data-level="Beginner">Beginner (1–10)</button>
-        <button data-level="Intermediate">Intermediate (11–20)</button>
-        <button data-level="Advanced">Advanced (21–30)</button>
-      </div>
-      <div class="progress">
-        <span id="progressText">0 / 30 done</span>
-        <div class="track"><div class="fill" id="progressFill"></div></div>
-      </div>
-    </div>
-
-    <div class="days" id="days"></div>
-  </section>
+  <!-- PUBLIC SPEAKING -->
+  <section data-page="speaking" data-module="speaking"></section>
 
   <!-- ABOUT -->
   <section data-page="about">
     <h1>How to use</h1>
     <p class="lead">Every session follows the same simple 10-minute plan.</p>
     <ol class="steps">
-      <li>Open <b>English Practice</b> and find today's day card.</li>
-      <li>Read the topic and say the useful words out loud once.</li>
+      <li>Open <b>English Practice</b> or <b>Public Speaking</b> and find today's day card.</li>
+      <li>Read the topic and say the useful words / phrases out loud once.</li>
       <li>Tap the <b>Gemini</b> button. The prompt is copied and Gemini opens in a new tab.</li>
       <li>If the chat box is empty, paste (Ctrl+V / long-press → Paste) and send.</li>
       <li>Use Gemini's microphone or Live mode to <b>speak</b> your answers.</li>
@@ -255,7 +241,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const DAYS = [
+const ENGLISH_DAYS = [
   // ---------- Beginner ----------
   { t: "Introducing Yourself", lv: "Beginner",
     g: "Introduce yourself clearly and confidently in under one minute.",
@@ -383,7 +369,180 @@ const DAYS = [
     w: ["aspire to", "long-term", "in five years", "determined", "progress", "I've improved"] }
 ];
 
-function buildPrompt(d, n) {
+const SPEAKING_DAYS = [
+  // ---------- Foundations ----------
+  { t: "Facing Stage Fear", lv: "Foundations",
+    g: "Understand your nervousness and speak for 1 minute anyway.",
+    m: "Ask me what makes me nervous about speaking in front of people. Teach me one quick calming technique (like box breathing). Then ask me to give a 1-minute talk on 'A day I felt proud of myself' and encourage me warmly.",
+    w: ["I feel nervous when", "take a deep breath", "butterflies in my stomach", "audience", "take a moment", "I'm ready"] },
+  { t: "Voice, Pace & Pauses", lv: "Foundations",
+    g: "Speak slowly and clearly, and use pauses instead of rushing.",
+    m: "Give me a short 4-line paragraph to read aloud, marking where to pause (/) and which words to stress (CAPS). Then ask me to talk for 1 minute about my favourite food using the same slow pace and pauses.",
+    w: ["pause", "pace", "slow down", "stress", "project your voice", "clearly"] },
+  { t: "The 30-Second Self-Pitch", lv: "Foundations",
+    g: "Introduce yourself memorably in 30 seconds.",
+    m: "Help me build a 30-second self-introduction for a stage or event: who I am, what I do, one interesting fact and a closing line. Let me deliver it 3 times and improve it each time.",
+    w: ["Good morning, everyone", "my name is", "I'm passionate about", "fun fact", "I look forward to", "thank you"] },
+  { t: "Body Language & Eye Contact", lv: "Foundations",
+    g: "Use posture, gestures and eye contact to look confident.",
+    m: "Give me 5 simple body-language rules for speaking (posture, hands, eye contact, smile, movement). Then ask me to give a 1-minute talk on my favourite place and afterwards describe what I did with my hands, eyes and posture so you can coach me.",
+    w: ["stand tall", "open gestures", "eye contact", "smile", "shoulders relaxed", "move with purpose"] },
+  { t: "Killing Filler Words", lv: "Foundations",
+    g: "Replace 'um', 'uh', 'like' and 'actually' with confident pauses.",
+    m: "Give me 3 quick impromptu topics, one at a time. For each, I speak for 45 seconds. Watch my text for filler words (um, uh, like, basically, actually, you know), count them and show me how to replace them with a pause.",
+    w: ["pause instead", "let me think", "here's the thing", "in short", "simply put", "to be clear"] },
+  { t: "Opening – Body – Closing", lv: "Foundations",
+    g: "Organise any short talk into three clear parts.",
+    m: "Teach me the Opening–Body–Closing structure in 3 lines. Then ask me to plan and give a 1-minute talk on 'My favourite film or book' using that structure. Point out which part was strong and which was weak.",
+    w: ["today I'd like to talk about", "firstly", "secondly", "the main reason", "to conclude", "thank you for listening"] },
+  { t: "Powerful Openings", lv: "Foundations",
+    g: "Grab attention in the first 10 seconds.",
+    m: "Show me 4 types of openings: a question, a surprising fact, a short story and a bold statement. Give me a topic (e.g. 'Why we should read more'), and ask me to create one opening of each type. Rate each one.",
+    w: ["have you ever", "imagine", "did you know", "picture this", "here's a surprising fact", "let me tell you"] },
+  { t: "Memorable Closings", lv: "Foundations",
+    g: "End a talk so people remember it.",
+    m: "Show me 3 ways to close a talk: a call to action, a callback to the opening, and a powerful quote. Ask me to write and deliver each type of closing for a talk on 'The value of time'.",
+    w: ["so here's my request", "remember", "let's start today", "as I said at the beginning", "in the words of", "thank you"] },
+  { t: "Impromptu Speaking (PREP)", lv: "Foundations",
+    g: "Answer unexpected questions using Point – Reason – Example – Point.",
+    m: "Teach me the PREP method briefly. Then give me 3 random 'table topics' questions one at a time. I answer each in about 1 minute using PREP. Tell me if I followed the structure.",
+    w: ["my point is", "the reason is", "for example", "that's why", "in my experience", "so, to sum up"] },
+  { t: "Speaking with a Personal Story", lv: "Foundations",
+    g: "Tell a short personal story with feeling.",
+    m: "Ask me to tell a 2-minute personal story about a lesson I learned. Ask questions to help me add sensory details, emotions and a clear message at the end.",
+    w: ["I'll never forget", "at that moment", "I realised", "it taught me", "looking back", "the lesson is"] },
+
+  // ---------- Building ----------
+  { t: "Storytelling Structure", lv: "Building",
+    g: "Use Situation – Conflict – Resolution to make stories gripping.",
+    m: "Teach me the Situation–Conflict–Resolution story arc. Ask me to tell a story about a challenge I faced using this arc, then help me rewrite the weakest part and tell it again.",
+    w: ["it all started when", "but then", "the problem was", "I had to decide", "finally", "since then"] },
+  { t: "Persuasive Speech Basics", lv: "Building",
+    g: "Persuade using Problem – Solution – Action.",
+    m: "Give me a topic like 'Every school should teach public speaking'. Help me plan a 2-minute persuasive speech with Problem–Solution–Action and then deliver it. Act as a sceptical listener afterwards.",
+    w: ["the problem is", "what if we", "the solution is simple", "imagine a world where", "I urge you to", "let's act now"] },
+  { t: "Using Examples & Numbers", lv: "Building",
+    g: "Support your points with examples, facts and comparisons.",
+    m: "Ask me to make 3 claims about a topic I know. For each claim, challenge me to support it with an example, a number, or a comparison. Show me how to say numbers in a memorable way.",
+    w: ["for instance", "according to", "that's like", "nearly half", "in other words", "this shows"] },
+  { t: "Explaining a Complex Idea Simply", lv: "Building",
+    g: "Make a difficult topic easy for anyone to understand.",
+    m: "Ask me to explain something from my work or studies as if speaking to a 12-year-old. Point out jargon and help me use analogies and simple words.",
+    w: ["think of it like", "in simple terms", "the basic idea is", "here's an example", "does that make sense", "step by step"] },
+  { t: "Handling Q&A", lv: "Building",
+    g: "Answer audience questions calmly, even when you don't know.",
+    m: "I just gave a short talk on a topic I choose. Act as the audience and ask me 5 questions: easy, tricky, off-topic, aggressive and one I can't answer. Coach me on how to handle each.",
+    w: ["that's a great question", "if I understand correctly", "let me clarify", "I don't have that information right now", "I'll get back to you", "does that answer your question"] },
+  { t: "Vocal Variety & Emphasis", lv: "Building",
+    g: "Change tone, volume and speed to keep listeners interested.",
+    m: "Give me one sentence and ask me to rewrite it with emphasis marks (CAPS, pauses) to express excitement, sadness and urgency. Then give me a short passage to mark up and read with variety.",
+    w: ["emphasise", "rise and fall", "louder", "softer", "dramatic pause", "change the pace"] },
+  { t: "Adding Light Humour", lv: "Building",
+    g: "Use safe, natural humour to connect with the audience.",
+    m: "Teach me 3 safe humour techniques (self-deprecating, exaggeration, rule of three). Ask me to add one light humorous line to a 1-minute talk on 'Monday mornings'.",
+    w: ["to be honest", "believe it or not", "you can imagine", "of course", "funny enough", "I'm only half joking"] },
+  { t: "Welcome Speech", lv: "Building",
+    g: "Open an event warmly and confidently.",
+    m: "Help me prepare and deliver a 1-minute welcome speech for a college or office event. Coach me on greeting the chief guest, introducing the purpose and setting the mood.",
+    w: ["respected chief guest", "dear friends", "it gives me great pleasure", "on behalf of", "we are gathered here", "warm welcome"] },
+  { t: "Vote of Thanks", lv: "Building",
+    g: "Thank people sincerely and specifically.",
+    m: "Help me prepare a 1-minute vote of thanks for an event. Teach me how to thank people specifically (not just 'thanks to all'). Let me deliver it and give feedback.",
+    w: ["I would like to thank", "special thanks to", "without whose support", "sincere gratitude", "last but not least", "once again"] },
+  { t: "Anchoring & Introducing a Speaker", lv: "Building",
+    g: "Introduce speakers and link parts of an event smoothly.",
+    m: "Role-play: I am the anchor/MC of an event. Give me details of a guest speaker and let me introduce them in 45 seconds. Then help me with transitions between event items.",
+    w: ["please put your hands together for", "our next speaker", "needs no introduction", "without further ado", "moving on to", "let's welcome"] },
+
+  // ---------- Mastery ----------
+  { t: "3-Minute Motivational Talk", lv: "Mastery",
+    g: "Inspire an audience with a clear message and a story.",
+    m: "Help me plan a 3-minute motivational talk on a topic I choose: a hook, one story, one big message and a call to action. Then let me deliver it and give detailed feedback.",
+    w: ["here's what I believe", "you have the power to", "it's not about", "every single day", "start small", "you can do this"] },
+  { t: "Presenting at Work", lv: "Mastery",
+    g: "Give a clear, professional project update.",
+    m: "Role-play: I present a project update to senior managers. Help me plan 3 slides (status, risks, next steps) and present them in 2–3 minutes. Then act as the managers and ask questions.",
+    w: ["as you can see on this slide", "the key takeaway", "we're on track", "one risk is", "next steps", "I'd like your input on"] },
+  { t: "Pitching an Idea", lv: "Mastery",
+    g: "Pitch an idea in 60 seconds so people say yes.",
+    m: "Act as an investor or my manager. Let me pitch an idea in 60 seconds (problem, solution, benefit, ask). Challenge me with 3 tough questions and then help me make the pitch sharper.",
+    w: ["here's the opportunity", "our solution", "the benefit is", "what makes it different", "all we need is", "the return is"] },
+  { t: "Tough Audiences & Interruptions", lv: "Mastery",
+    g: "Stay calm when people interrupt, disagree or lose interest.",
+    m: "I am giving a short talk. Act as a difficult audience: interrupt me, disagree loudly, look bored, and ask a hostile question. Coach me on calm, professional responses each time.",
+    w: ["I appreciate your point", "let me finish this thought", "let's discuss that after", "I understand your concern", "to bring us back", "good point, and"] },
+  { t: "Group Discussion", lv: "Mastery",
+    g: "Enter, contribute and lead a group discussion.",
+    m: "Simulate a group discussion with 3 other participants (you play all of them) on a current topic. Help me enter the discussion politely, add value, and summarise at the end.",
+    w: ["if I may add", "building on that", "I'd like to bring in another angle", "let's not forget", "to summarise our discussion", "we seem to agree that"] },
+  { t: "Speaking Without Notes", lv: "Mastery",
+    g: "Remember your talk using key points instead of a script.",
+    m: "Teach me the 'keyword chain' method to remember a talk. Help me reduce a 2-minute talk to 5 keywords, then ask me to deliver it from only those keywords.",
+    w: ["key point one", "that brings me to", "which leads to", "the next idea", "connecting this", "finally"] },
+  { t: "Debate Speech", lv: "Mastery",
+    g: "Build and defend an argument under pressure.",
+    m: "Give me a debate motion. I speak for 2 minutes in favour. Then you give a short rebuttal, and I respond to it in 1 minute. Judge my logic, structure and confidence.",
+    w: ["the motion states", "my first argument", "my opponent claims", "however, the evidence shows", "this is crucial because", "therefore I urge you"] },
+  { t: "Online Presentations", lv: "Mastery",
+    g: "Engage people on video calls and online meetings.",
+    m: "Give me 6 tips for speaking on video calls (camera, energy, interaction). Then role-play an online meeting where I present for 2 minutes and keep the audience engaged with a question or poll.",
+    w: ["can everyone see my screen", "let me share my screen", "feel free to unmute", "drop your answers in the chat", "I'll pause here", "you're on mute"] },
+  { t: "Planning a TED-Style Talk", lv: "Mastery",
+    g: "Design a talk built around one powerful idea.",
+    m: "Help me find one 'idea worth sharing' from my life or work. Build a 5-minute talk outline: hook, story, idea, evidence, call to action. Let me deliver the opening 1 minute and give feedback.",
+    w: ["here's an idea", "what I discovered", "it changed the way I", "the research shows", "what if", "my invitation to you"] },
+  { t: "Final Speech & Review", lv: "Mastery",
+    g: "Deliver your best speech and review your 30-day journey.",
+    m: "Ask me to deliver a 3-minute speech on 'How I became a more confident speaker' using everything I've learned (structure, story, pauses, opening, closing). Give a full evaluation and a plan for the next 30 days.",
+    w: ["when I started", "the biggest change", "I learned that", "my next goal", "thank you for", "the journey continues"] }
+];
+
+const MODULES = {
+  english: {
+    title: "English Communication Practice",
+    lead: "One topic per day, 10 minutes each. Read the topic and useful words, then tap the Gemini button on the right to start your session.",
+    levels: ["Beginner", "Intermediate", "Advanced"],
+    wordsLabel: "Useful words",
+    storeKey: "cc-english-done",
+    days: ENGLISH_DAYS,
+    prompt: buildEnglishPrompt
+  },
+  speaking: {
+    title: "Public Speaking Practice",
+    lead: "One speaking drill per day, 10 minutes each. Turn on Gemini's microphone or Live mode and speak out loud — standing up, as if on stage.",
+    levels: ["Foundations", "Building", "Mastery"],
+    wordsLabel: "Useful phrases",
+    storeKey: "cc-speaking-done",
+    days: SPEAKING_DAYS,
+    prompt: buildSpeakingPrompt
+  }
+};
+
+function buildSpeakingPrompt(d, n) {
+  return `You are my encouraging and honest public speaking coach. This is Day ${n} of my 30-day public speaking practice (Level: ${d.lv}).
+
+Topic: ${d.t}
+Goal: ${d.g}
+
+Run a 10-minute session in this structure:
+1. Warm-up (2 min): a quick breathing or voice exercise, then one easy 30-second speaking question.
+2. Main practice (6 min): ${d.m}
+3. Feedback (2 min): evaluate my speaking.
+
+Useful phrases I should try to use: ${d.w.join(", ")}.
+
+Rules:
+- Give me ONE task at a time and wait for me to finish speaking.
+- Keep your instructions short so that I speak more than you.
+- After each attempt, give feedback as: 1 thing I did well, 1 thing to improve, and a better version of one of my sentences.
+- Point out filler words (um, uh, like, actually, basically) and weak or repeated words.
+- If I get stuck or use Malayalam, help me say it in simple English.
+- At the end give me: a score out of 10 for Structure, Clarity, Confidence and Engagement; my top 3 improvements; and 1 strong line I can reuse in future talks.
+
+Start now with a short motivating greeting and the warm-up.`;
+}
+
+function buildEnglishPrompt(d, n) {
   return `You are my friendly and patient English communication coach. This is Day ${n} of my 30-day speaking practice (Level: ${d.lv}).
 
 Topic: ${d.t}
@@ -407,20 +566,64 @@ Rules:
 Start now with a short greeting and the first warm-up question.`;
 }
 
-const GEMINI_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285f4"/><stop offset=".5" stop-color="#9b72cb"/><stop offset="1" stop-color="#d96570"/></linearGradient></defs><path fill="url(#gg)" d="M12 2c.5 5.3 4.7 9.5 10 10-5.3.5-9.5 4.7-10 10-.5-5.3-4.7-9.5-10-10 5.3-.5 9.5-4.7 10-10z"/></svg>`;
+let iconId = 0;
+const geminiIcon = () => { const id = "gg" + (++iconId); return `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285f4"/><stop offset=".5" stop-color="#9b72cb"/><stop offset="1" stop-color="#d96570"/></linearGradient></defs><path fill="url(#${id})" d="M12 2c.5 5.3 4.7 9.5 10 10-5.3.5-9.5 4.7-10 10-.5-5.3-4.7-9.5-10-10 5.3-.5 9.5-4.7 10-10z"/></svg>`; };
 
-const STORE_KEY = "cc-english-done";
-function loadDone() { try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]")); } catch { return new Set(); } }
-function saveDone() { try { localStorage.setItem(STORE_KEY, JSON.stringify([...done])); } catch {} }
-const done = loadDone();
+function loadDone(key) { try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); } catch { return new Set(); } }
+function saveDone(mod) { try { localStorage.setItem(mod.storeKey, JSON.stringify([...mod.done])); } catch {} }
 
 const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-function renderDays() {
-  document.getElementById("days").innerHTML = DAYS.map((d, i) => {
-    const n = i + 1;
-    return `
-    <article class="card ${done.has(n) ? "done" : ""}" data-n="${n}" data-level="${d.lv}">
+function renderModule(key) {
+  const mod = MODULES[key];
+  mod.done = loadDone(mod.storeKey);
+  const sec = document.querySelector(`[data-module="${key}"]`);
+  const ranges = ["1–10", "11–20", "21–30"];
+  sec.innerHTML = `
+    <h1>${esc(mod.title)}</h1>
+    <p class="lead">${esc(mod.lead)}</p>
+    <div class="toolbar">
+      <div class="filters">
+        <button data-level="all" class="active">All days</button>
+        ${mod.levels.map((l, i) => `<button data-level="${l}">${l} (${ranges[i]})</button>`).join("")}
+      </div>
+      <div class="progress">
+        <span class="ptext"></span>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+    </div>
+    <div class="days">${mod.days.map((d, i) => dayCard(mod, d, i + 1)).join("")}</div>`;
+  updateProgress(key);
+
+  sec.querySelector(".days").addEventListener("click", e => {
+    const card = e.target.closest(".card");
+    if (!card) return;
+    const n = +card.dataset.n;
+    const prompt = mod.prompt(mod.days[n - 1], n);
+    if (e.target.closest(".gemini")) openGemini(prompt);
+    else if (e.target.closest(".copy")) copyText(prompt).then(ok => toast(ok ? "Prompt copied ✓" : "Copy failed — open “Session plan & prompt” and copy manually."));
+    else if (e.target.closest(".mark")) {
+      mod.done.has(n) ? mod.done.delete(n) : mod.done.add(n);
+      saveDone(mod);
+      card.classList.toggle("done", mod.done.has(n));
+      card.querySelector(".mark").textContent = mod.done.has(n) ? "✓ Done" : "Mark as done";
+      updateProgress(key);
+    }
+  });
+
+  sec.querySelector(".filters").addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    sec.querySelectorAll(".filters button").forEach(x => x.classList.toggle("active", x === b));
+    const lv = b.dataset.level;
+    sec.querySelectorAll(".card").forEach(c => c.style.display = (lv === "all" || c.dataset.level === lv) ? "" : "none");
+  });
+}
+
+function dayCard(mod, d, n) {
+  const isDone = mod.done.has(n);
+  return `
+    <article class="card ${isDone ? "done" : ""}" data-n="${n}" data-level="${d.lv}">
       <div class="body">
         <div class="meta">
           <span class="day">Day ${n}</span>
@@ -430,7 +633,7 @@ function renderDays() {
         </div>
         <h3>${esc(d.t)}</h3>
         <p class="goal">${esc(d.g)}</p>
-        <p class="label">Useful words</p>
+        <p class="label">${mod.wordsLabel}</p>
         <div class="words">${d.w.map(w => `<span>${esc(w)}</span>`).join("")}</div>
         <details>
           <summary>Session plan &amp; prompt</summary>
@@ -439,27 +642,27 @@ function renderDays() {
             <li>Main practice · 6 min — ${esc(d.m)}</li>
             <li>Feedback · 2 min</li>
           </ol>
-          <pre class="prompt">${esc(buildPrompt(d, n))}</pre>
+          <pre class="prompt">${esc(mod.prompt(d, n))}</pre>
         </details>
         <div class="actions">
           <button class="btn copy">📋 Copy prompt</button>
-          <button class="btn mark">${done.has(n) ? "✓ Done" : "Mark as done"}</button>
+          <button class="btn mark">${isDone ? "✓ Done" : "Mark as done"}</button>
         </div>
       </div>
       <div class="side">
         <div>
-          <button class="gemini" title="Open this prompt in Gemini" aria-label="Open Day ${n} in Gemini">${GEMINI_ICON}</button>
+          <button class="gemini" title="Open this prompt in Gemini" aria-label="Open Day ${n} in Gemini">${geminiIcon()}</button>
           <small>Open in<br>Gemini</small>
         </div>
       </div>
     </article>`;
-  }).join("");
-  updateProgress();
 }
 
-function updateProgress() {
-  document.getElementById("progressText").textContent = `${done.size} / ${DAYS.length} done`;
-  document.getElementById("progressFill").style.width = `${(done.size / DAYS.length) * 100}%`;
+function updateProgress(key) {
+  const mod = MODULES[key];
+  const sec = document.querySelector(`[data-module="${key}"]`);
+  sec.querySelector(".ptext").textContent = `${mod.done.size} / ${mod.days.length} done`;
+  sec.querySelector(".fill").style.width = `${(mod.done.size / mod.days.length) * 100}%`;
 }
 
 let toastTimer;
@@ -495,30 +698,6 @@ function openGemini(prompt) {
   window.open("https://gemini.google.com/app?q=" + encodeURIComponent(prompt), "_blank", "noopener");
 }
 
-document.getElementById("days").addEventListener("click", e => {
-  const card = e.target.closest(".card");
-  if (!card) return;
-  const n = +card.dataset.n;
-  const prompt = buildPrompt(DAYS[n - 1], n);
-  if (e.target.closest(".gemini")) openGemini(prompt);
-  else if (e.target.closest(".copy")) copyText(prompt).then(ok => toast(ok ? "Prompt copied ✓" : "Copy failed — open “Session plan & prompt” and copy manually."));
-  else if (e.target.closest(".mark")) {
-    done.has(n) ? done.delete(n) : done.add(n);
-    saveDone();
-    card.classList.toggle("done", done.has(n));
-    card.querySelector(".mark").textContent = done.has(n) ? "✓ Done" : "Mark as done";
-    updateProgress();
-  }
-});
-
-document.getElementById("filters").addEventListener("click", e => {
-  const b = e.target.closest("button");
-  if (!b) return;
-  document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("active", x === b));
-  const lv = b.dataset.level;
-  document.querySelectorAll(".card").forEach(c => c.style.display = (lv === "all" || c.dataset.level === lv) ? "" : "none");
-});
-
 // Tabs (hash-based so the browser back button works)
 function showTab(name) {
   if (!document.querySelector(`[data-page="${name}"]`)) name = "home";
@@ -533,7 +712,7 @@ document.getElementById("tabs").addEventListener("click", e => {
 document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => location.hash = b.dataset.goto));
 window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
 
-renderDays();
+Object.keys(MODULES).forEach(renderModule);
 showTab(location.hash.slice(1) || "home");
 </script>
 </body>
